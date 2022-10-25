@@ -1,0 +1,56 @@
+2022-10-25 04:54:04,478 Namespace(batch_size=8, data_setting='50', dropout_rate=0.1, embed_size=128, freeze_embed=True, label_attn_expansion=2, learning_rate=[0.001], log='INFO', max_len=2500, model='TransICD', num_attn_heads=8, num_epoch=[30, 35, 40], num_trans_layers=2, random_seed=271, trans_forward_expansion=4)
+
+2022-10-25 04:54:05,005 train set length stats:
+count    1539.000000
+mean      818.129955
+std       435.011975
+min        73.000000
+25%       509.500000
+50%       732.000000
+75%      1035.000000
+max      3495.000000
+Name: LENGTH, dtype: float64
+2022-10-25 04:54:05,031 In train set, average code counts per discharge summary: 5.849902534113061
+2022-10-25 04:54:05,036 Final number of labels/codes: 50
+2022-10-25 04:54:05,082 train set true item count: 1536
+
+
+2022-10-25 04:54:05,186 dev set length stats:
+count     513.000000
+mean     1136.013645
+std       423.483450
+min       178.000000
+25%       841.000000
+50%      1075.000000
+75%      1365.000000
+max      2854.000000
+Name: LENGTH, dtype: float64
+2022-10-25 04:54:05,188 In dev set, average code counts per discharge summary: 6.218323586744639
+2022-10-25 04:54:05,189 Final number of labels/codes: 50
+2022-10-25 04:54:05,209 dev set true item count: 512
+
+
+2022-10-25 04:54:05,331 test set length stats:
+count     513.000000
+mean     1088.832359
+std       457.952503
+min       210.000000
+25%       785.000000
+50%      1017.000000
+75%      1300.000000
+max      3549.000000
+Name: LENGTH, dtype: float64
+2022-10-25 04:54:05,332 In test set, average code counts per discharge summary: 6.477582846003899
+2022-10-25 04:54:05,334 Final number of labels/codes: 50
+2022-10-25 04:54:05,354 test set true item count: 512
+
+
+2022-10-25 04:54:05,396 Size of training vocabulary including PAD, UNK: 28283
+2022-10-25 04:54:06,648 train dataset has on average 0.0015933428823350056 oov words per discharge summary
+2022-10-25 04:54:07,233 dev dataset has on average 0.005226295560268636 oov words per discharge summary
+2022-10-25 04:54:07,815 test dataset has on average 0.0023053675063815448 oov words per discharge summary
+2022-10-25 04:54:07,817 Taining labels are: ['038.9', '244.9', '250.00', '272.0', '272.4', '276.1', '276.2', '285.1', '285.9', '287.5', '311', '33.24', '36.15', '37.22', '38.91', '38.93', '39.61', '39.95', '401.9', '403.90', '403.91', '410.71', '412', '414.01', '424.0', '427.31', '428.0', '45.13', '486', '496', '507.0', '511.9', '518.81', '530.81', '584.9', '585.9', '599.0', '785.52', '88.56', '88.72', '96.04', '96.6', '96.71', '96.72', '99.04', '995.92', 'V15.82', 'V45.81', 'V45.82', 'V58.61']
+
+2022-10-25 04:54:12,622 Total token count (including PAD, UNK) of full preprocessed discharge summaries: 28283
+2022-10-25 04:54:13,651 Training with: HyperParams(learning_rate=0.001, num_epoch=30)
+2022-10-25 04:54:13,653 Training Started...

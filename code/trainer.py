@@ -7,7 +7,6 @@ import torch.optim as optim
 from run_manager import RunManager
 from torch.utils.data import DataLoader
 
-
 def train(model, train_set, dev_set, test_set, hyper_params, batch_size, device):
     train_loader = DataLoader(train_set, batch_size=batch_size, shuffle=True, num_workers=1)
     m = RunManager()
@@ -35,10 +34,9 @@ def train(model, train_set, dev_set, test_set, hyper_params, batch_size, device)
             optimizer.zero_grad()
             loss.backward()
             optimizer.step()
-
             m.track_loss(loss)
             # m.track_num_correct(preds, affinities)
-
+        torch.save(model, f'../results/model.pt')
         m.end_epoch()
     m.end_run()
     hype = '_'.join([f'{k}_{v}' for k, v in hyper_params._asdict().items()])

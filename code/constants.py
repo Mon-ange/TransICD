@@ -70,7 +70,7 @@ def get_args():
     parser.add_argument(
         '--max_len',
         type=int,
-        default=2500,
+        default=1500,
         help='Max Length of discharge summary'
     )
 

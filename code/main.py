@@ -9,6 +9,10 @@ from data import prepare_datasets, load_embedding_weights, load_label_embedding
 from trainer import train
 import random
 import os
+import sys
+from predictor import Predictor
+from data import load_dataset
+from torch.utils.data import DataLoader
 
 
 def get_hyper_params_combinations(args):
@@ -49,17 +53,32 @@ def run(args, device):
 
 
 if __name__ == "__main__":
-    args = constants.get_args()
-    if not os.path.exists('../results'):
-        os.makedirs('../results')
-    FORMAT = '%(asctime)-15s %(message)s'
-    logging.basicConfig(filename='../results/app.log', filemode='w', format=FORMAT, level=getattr(logging, args.log.upper()))
-    logging.info(f'{args}\n')
+    run_mode = sys.argv[1]
     use_cuda = torch.cuda.is_available()
+    print("use_cuda : " + str(use_cuda))
     device = torch.device("cuda" if use_cuda else "cpu")
-    random.seed(args.random_seed)
-    np.random.seed(args.random_seed)
-    torch.manual_seed(args.random_seed)
-    if use_cuda:
-        torch.cuda.manual_seed_all(args.random_seed)
-    run(args, device)
+
+    if(run_mode == 'test'):
+        print("Running Test ....")
+        model = torch.load(f'../results/model.pt')
+        predictor = Predictor(model = model, device= device)
+        train_set, dev_set, test_set, train_labels, train_label_freq, input_indexer = prepare_datasets(data_setting= '50', batch_size= 8, max_len= 1500)
+        dataLoader = DataLoader(train_set, batch_size=8, shuffle=True, num_workers=1)
+        for batch in dataLoader:
+            print(batch)
+            output = predictor.predict(text = batch['text'])
+            print(output)
+            break
+    elif(run_mode =='train'):
+        args = constants.get_args()
+        if not os.path.exists('../results'):
+            os.makedirs('../results')
+        FORMAT = '%(asctime)-15s %(message)s'
+        logging.basicConfig(filename='../results/app.log', filemode='w', format=FORMAT, level=getattr(logging, args.log.upper()))
+        logging.info(f'{args}\n')
+        random.seed(args.random_seed)
+        np.random.seed(args.random_seed)
+        torch.manual_seed(args.random_seed)
+        if use_cuda:
+            torch.cuda.manual_seed_all(args.random_seed)
+        run(args, device)

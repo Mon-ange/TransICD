@@ -1,6 +1,6 @@
-2022-10-25 04:54:04,478 Namespace(batch_size=8, data_setting='50', dropout_rate=0.1, embed_size=128, freeze_embed=True, label_attn_expansion=2, learning_rate=[0.001], log='INFO', max_len=2500, model='TransICD', num_attn_heads=8, num_epoch=[30, 35, 40], num_trans_layers=2, random_seed=271, trans_forward_expansion=4)
+2022-10-25 23:45:40,739 Namespace(batch_size=8, data_setting='50', dropout_rate=0.1, embed_size=128, freeze_embed=True, label_attn_expansion=2, learning_rate=[0.001], log='INFO', max_len=1500, model='TransICD', num_attn_heads=8, num_epoch=[30, 35, 40], num_trans_layers=2, random_seed=271, trans_forward_expansion=4)
 
-2022-10-25 04:54:05,005 train set length stats:
+2022-10-25 23:45:40,976 train set length stats:
 count    1539.000000
 mean      818.129955
 std       435.011975
@@ -10,12 +10,12 @@ min        73.000000
 75%      1035.000000
 max      3495.000000
 Name: LENGTH, dtype: float64
-2022-10-25 04:54:05,031 In train set, average code counts per discharge summary: 5.849902534113061
-2022-10-25 04:54:05,036 Final number of labels/codes: 50
-2022-10-25 04:54:05,082 train set true item count: 1536
+2022-10-25 23:45:40,979 In train set, average code counts per discharge summary: 5.849902534113061
+2022-10-25 23:45:40,984 Final number of labels/codes: 50
+2022-10-25 23:45:41,004 train set true item count: 1536
 
 
-2022-10-25 04:54:05,186 dev set length stats:
+2022-10-25 23:45:41,104 dev set length stats:
 count     513.000000
 mean     1136.013645
 std       423.483450
@@ -25,12 +25,12 @@ min       178.000000
 75%      1365.000000
 max      2854.000000
 Name: LENGTH, dtype: float64
-2022-10-25 04:54:05,188 In dev set, average code counts per discharge summary: 6.218323586744639
-2022-10-25 04:54:05,189 Final number of labels/codes: 50
-2022-10-25 04:54:05,209 dev set true item count: 512
+2022-10-25 23:45:41,106 In dev set, average code counts per discharge summary: 6.218323586744639
+2022-10-25 23:45:41,108 Final number of labels/codes: 50
+2022-10-25 23:45:41,130 dev set true item count: 512
 
 
-2022-10-25 04:54:05,331 test set length stats:
+2022-10-25 23:45:41,248 test set length stats:
 count     513.000000
 mean     1088.832359
 std       457.952503
@@ -40,17 +40,90 @@ min       210.000000
 75%      1300.000000
 max      3549.000000
 Name: LENGTH, dtype: float64
-2022-10-25 04:54:05,332 In test set, average code counts per discharge summary: 6.477582846003899
-2022-10-25 04:54:05,334 Final number of labels/codes: 50
-2022-10-25 04:54:05,354 test set true item count: 512
+2022-10-25 23:45:41,250 In test set, average code counts per discharge summary: 6.477582846003899
+2022-10-25 23:45:41,252 Final number of labels/codes: 50
+2022-10-25 23:45:41,274 test set true item count: 512
 
 
-2022-10-25 04:54:05,396 Size of training vocabulary including PAD, UNK: 28283
-2022-10-25 04:54:06,648 train dataset has on average 0.0015933428823350056 oov words per discharge summary
-2022-10-25 04:54:07,233 dev dataset has on average 0.005226295560268636 oov words per discharge summary
-2022-10-25 04:54:07,815 test dataset has on average 0.0023053675063815448 oov words per discharge summary
-2022-10-25 04:54:07,817 Taining labels are: ['038.9', '244.9', '250.00', '272.0', '272.4', '276.1', '276.2', '285.1', '285.9', '287.5', '311', '33.24', '36.15', '37.22', '38.91', '38.93', '39.61', '39.95', '401.9', '403.90', '403.91', '410.71', '412', '414.01', '424.0', '427.31', '428.0', '45.13', '486', '496', '507.0', '511.9', '518.81', '530.81', '584.9', '585.9', '599.0', '785.52', '88.56', '88.72', '96.04', '96.6', '96.71', '96.72', '99.04', '995.92', 'V15.82', 'V45.81', 'V45.82', 'V58.61']
+2022-10-25 23:45:41,304 Size of training vocabulary including PAD, UNK: 28283
+2022-10-25 23:45:42,624 train dataset has on average 0.0016124560034453128 oov words per discharge summary
+2022-10-25 23:45:43,279 dev dataset has on average 0.005324424486612811 oov words per discharge summary
+2022-10-25 23:45:44,040 test dataset has on average 0.002359630273708894 oov words per discharge summary
+2022-10-25 23:45:44,042 Taining labels are: ['038.9', '244.9', '250.00', '272.0', '272.4', '276.1', '276.2', '285.1', '285.9', '287.5', '311', '33.24', '36.15', '37.22', '38.91', '38.93', '39.61', '39.95', '401.9', '403.90', '403.91', '410.71', '412', '414.01', '424.0', '427.31', '428.0', '45.13', '486', '496', '507.0', '511.9', '518.81', '530.81', '584.9', '585.9', '599.0', '785.52', '88.56', '88.72', '96.04', '96.6', '96.71', '96.72', '99.04', '995.92', 'V15.82', 'V45.81', 'V45.82', 'V58.61']
 
-2022-10-25 04:54:12,622 Total token count (including PAD, UNK) of full preprocessed discharge summaries: 28283
-2022-10-25 04:54:13,651 Training with: HyperParams(learning_rate=0.001, num_epoch=30)
-2022-10-25 04:54:13,653 Training Started...
+2022-10-25 23:45:49,985 Total token count (including PAD, UNK) of full preprocessed discharge summaries: 28283
+2022-10-25 23:45:59,588 Training with: HyperParams(learning_rate=0.001, num_epoch=30)
+2022-10-25 23:45:59,589 Training Started...
+2022-10-26 00:02:42,436 Training finished.
+
+2022-10-26 00:02:55,577 train Accuracy: 0.064453125
+2022-10-26 00:02:55,578 train f1 score (micro): 0.7331945772627554
+2022-10-26 00:02:55,578 train f1 score (macro): 0.667250189651859
+2022-10-26 00:02:55,578 train auc score (micro): 0.9616403234684922
+2022-10-26 00:02:55,578 train auc score (macro): 0.9493275276642582
+2022-10-26 00:02:55,578 train precision at ks [1, 5, 8, 10, 15]: [0.9264322916666666, 0.6947916666666666, 0.5602213541666666, 0.49095052083333335, 0.364453125]
+
+2022-10-26 00:03:02,042 dev Accuracy: 0.013671875
+2022-10-26 00:03:02,042 dev f1 score (micro): 0.4784468575189207
+2022-10-26 00:03:02,042 dev f1 score (macro): 0.3948686469027769
+2022-10-26 00:03:02,042 dev auc score (micro): 0.8393422561632625
+2022-10-26 00:03:02,042 dev auc score (macro): 0.7996954240782437
+2022-10-26 00:03:02,042 dev precision at ks [1, 5, 8, 10, 15]: [0.689453125, 0.48046875000000006, 0.393310546875, 0.3568359375, 0.291796875]
+
+2022-10-26 00:03:10,177 test Accuracy: 0.00390625
+2022-10-26 00:03:10,177 test f1 score (micro): 0.46986983769885904
+2022-10-26 00:03:10,177 test f1 score (macro): 0.3816587520654764
+2022-10-26 00:03:10,178 test auc score (micro): 0.8266085827238636
+2022-10-26 00:03:10,178 test auc score (macro): 0.7837685140358245
+2022-10-26 00:03:10,178 test precision at ks [1, 5, 8, 10, 15]: [0.673828125, 0.4828125, 0.400146484375, 0.3671875, 0.30117187500000003]
+
+2022-10-26 00:03:17,933 Training with: HyperParams(learning_rate=0.001, num_epoch=35)
+2022-10-26 00:03:17,933 Training Started...
+2022-10-26 00:22:59,090 Training finished.
+
+2022-10-26 00:23:11,963 train Accuracy: 0.078125
+2022-10-26 00:23:11,963 train f1 score (micro): 0.7538515406162465
+2022-10-26 00:23:11,964 train f1 score (macro): 0.6941610193141372
+2022-10-26 00:23:11,964 train auc score (micro): 0.9661038102656687
+2022-10-26 00:23:11,964 train auc score (macro): 0.9549840004893503
+2022-10-26 00:23:11,964 train precision at ks [1, 5, 8, 10, 15]: [0.93359375, 0.707421875, 0.5699869791666666, 0.4967447916666667, 0.36779513888888893]
+
+2022-10-26 00:23:18,321 dev Accuracy: 0.01171875
+2022-10-26 00:23:18,321 dev f1 score (micro): 0.46456140350877195
+2022-10-26 00:23:18,321 dev f1 score (macro): 0.37672143100730054
+2022-10-26 00:23:18,321 dev auc score (micro): 0.8334228067589018
+2022-10-26 00:23:18,321 dev auc score (macro): 0.7945687604329964
+2022-10-26 00:23:18,322 dev precision at ks [1, 5, 8, 10, 15]: [0.703125, 0.48164062500000004, 0.397216796875, 0.3560546875, 0.29023437500000004]
+
+2022-10-26 00:23:26,352 test Accuracy: 0.009765625
+2022-10-26 00:23:26,352 test f1 score (micro): 0.45748582860953657
+2022-10-26 00:23:26,352 test f1 score (macro): 0.35998482003435556
+2022-10-26 00:23:26,352 test auc score (micro): 0.8300561276202217
+2022-10-26 00:23:26,352 test auc score (macro): 0.7875392937681396
+2022-10-26 00:23:26,352 test precision at ks [1, 5, 8, 10, 15]: [0.703125, 0.48671875, 0.409423828125, 0.37382812499999996, 0.3048177083333333]
+
+2022-10-26 00:23:33,839 Training with: HyperParams(learning_rate=0.001, num_epoch=40)
+2022-10-26 00:23:33,840 Training Started...
+2022-10-26 00:45:05,463 Training finished.
+
+2022-10-26 00:45:18,455 train Accuracy: 0.17447916666666666
+2022-10-26 00:45:18,455 train f1 score (micro): 0.8309552336346804
+2022-10-26 00:45:18,455 train f1 score (macro): 0.8054607636684515
+2022-10-26 00:45:18,455 train auc score (micro): 0.9836920648284396
+2022-10-26 00:45:18,455 train auc score (macro): 0.9801671227973197
+2022-10-26 00:45:18,455 train precision at ks [1, 5, 8, 10, 15]: [0.9641927083333334, 0.76328125, 0.6095377604166666, 0.5279296874999999, 0.3796875]
+
+2022-10-26 00:45:24,890 dev Accuracy: 0.01171875
+2022-10-26 00:45:24,890 dev f1 score (micro): 0.4683257918552036
+2022-10-26 00:45:24,890 dev f1 score (macro): 0.4114762413832175
+2022-10-26 00:45:24,890 dev auc score (micro): 0.8272342297134369
+2022-10-26 00:45:24,890 dev auc score (macro): 0.7864762611444752
+2022-10-26 00:45:24,891 dev precision at ks [1, 5, 8, 10, 15]: [0.671875, 0.46015625000000004, 0.384033203125, 0.34941406249999996, 0.287890625]
+
+2022-10-26 00:45:32,853 test Accuracy: 0.005859375
+2022-10-26 00:45:32,854 test f1 score (micro): 0.4773877050436915
+2022-10-26 00:45:32,854 test f1 score (macro): 0.41124619819116254
+2022-10-26 00:45:32,854 test auc score (micro): 0.8227932394385105
+2022-10-26 00:45:32,854 test auc score (macro): 0.7767677189730439
+2022-10-26 00:45:32,854 test precision at ks [1, 5, 8, 10, 15]: [0.6796875, 0.48632812500000006, 0.4033203125, 0.366796875, 0.2997395833333334]
+

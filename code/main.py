@@ -1,5 +1,6 @@
 import logging
 import numpy as np
+import argparse
 from collections import OrderedDict
 from collections import namedtuple
 from itertools import product
@@ -53,11 +54,12 @@ def run(args, device):
 
 
 if __name__ == "__main__":
-    run_mode = sys.argv[1]
+    args = constants.get_args()
+    run_mode = args.mode
     use_cuda = torch.cuda.is_available()
     print("use_cuda : " + str(use_cuda))
     device = torch.device("cuda" if use_cuda else "cpu")
-
+    print(run_mode)
     if(run_mode == 'test'):
         print("Running Test ....")
         model = torch.load(f'../results/model.pt')
@@ -70,12 +72,15 @@ if __name__ == "__main__":
             print(output)
             break
     elif(run_mode =='train'):
-        args = constants.get_args()
+        print(run_mode)
+        
+        print(run_mode)
         if not os.path.exists('../results'):
             os.makedirs('../results')
         FORMAT = '%(asctime)-15s %(message)s'
         logging.basicConfig(filename='../results/app.log', filemode='w', format=FORMAT, level=getattr(logging, args.log.upper()))
         logging.info(f'{args}\n')
+        print(run_mode)
         random.seed(args.random_seed)
         np.random.seed(args.random_seed)
         torch.manual_seed(args.random_seed)

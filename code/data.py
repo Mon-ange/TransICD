@@ -97,7 +97,7 @@ def load_embedding_weights():
     with open(EMBED_FILE_PATH) as ef:
         for line in ef:
             line = line.rstrip().split()
-            vec = np.array(line[1:]).astype(np.float)
+            vec = np.array(line[1:]).astype(np.double)
             # vec = vec / float(np.linalg.norm(vec) + 1e-6)
             W.append(vec)
     logging.info(f'Total token count (including PAD, UNK) of full preprocessed discharge summaries: {len(W)}')

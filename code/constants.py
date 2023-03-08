@@ -31,6 +31,12 @@ def get_args():
     parser.add_argument('--random_seed', default=271, help="Random seed.")
 
     parser.add_argument(
+        '--mode',
+        type=str,
+        help="Set the mode of training script"
+    )
+
+    parser.add_argument(
         '--data_setting',
         type=str,
         default=TOP50,

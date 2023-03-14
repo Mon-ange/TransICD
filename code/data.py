@@ -1,5 +1,6 @@
 import logging
 import torch
+import jieba
 import numpy as np
 import pandas as pd
 from torch.utils.data import Dataset
@@ -18,6 +19,7 @@ def remove_stopwords(text):
 
 
 def load_dataset(data_setting, batch_size, split):
+    print(f'{GENERATED_DIR}/{split}_{data_setting}.csv')
     data = pd.read_csv(f'{GENERATED_DIR}/{split}_{data_setting}.csv', dtype={'LENGTH': int})
     len_stat = data['LENGTH'].describe()
     logging.info(f'{split} set length stats:\n{len_stat}')

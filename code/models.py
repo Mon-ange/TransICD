@@ -94,7 +94,7 @@ class Transformer(nn.Module):
         self.pos_encoder = PositionalEncoding(embed_size, dropout_rate, max_len)
         encoder_layers = TransformerEncoderLayer(d_model=embed_size, nhead=num_heads,
                                                  dim_feedforward=forward_expansion*embed_size, dropout=dropout_rate)
-        self.encoder = TransformerEncoder(encoder_layers, num_layers)
+        self.encoder = TransformerEncoder(encoder_layers, num_lslayers)
         self.fcs = nn.ModuleList([nn.Linear(embed_size, 1) for code in range(output_size)])
 
     def forward(self, inputs, targets=None):

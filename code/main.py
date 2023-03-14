@@ -30,10 +30,12 @@ def get_hyper_params_combinations(args):
 
 
 def run(args, device):
-    train_set, dev_set, test_set, train_labels, train_label_freq, input_indexer = prepare_datasets(args.data_setting, args.batch_size, args.max_len)
+    train_set, dev_set, test_set, train_labels, train_label_freq, input_indexer = prepare_datasets(args.data_setting,
+                                                                                                   args.batch_size,
+                                                                                                   args.max_len)
     logging.info(f'Taining labels are: {train_labels}\n')
     embed_weights = load_embedding_weights()
-    label_desc = None # load_label_embedding(train_labels, input_indexer.index_of(constants.PAD_SYMBOL))
+    label_desc = None  # load_label_embedding(train_labels, input_indexer.index_of(constants.PAD_SYMBOL))
     model = None
     for hyper_params in get_hyper_params_combinations(args):
         if args.model == 'Transformer':
@@ -46,7 +48,7 @@ def run(args, device):
                              args.label_attn_expansion, args.dropout_rate, label_desc, device, train_label_freq)
         else:
             raise ValueError("Unknown value for args.model. Pick Transformer or TransICD")
-        
+
         if model:
             model.to(device)
             logging.info(f"Training with: {hyper_params}")
@@ -60,25 +62,25 @@ if __name__ == "__main__":
     print("use_cuda : " + str(use_cuda))
     device = torch.device("cuda" if use_cuda else "cpu")
     print(run_mode)
-    if(run_mode == 'test'):
+    if run_mode == 'test':
         print("Running Test ....")
         model = torch.load(f'../results/model.pt')
-        predictor = Predictor(model = model, device= device)
-        train_set, dev_set, test_set, train_labels, train_label_freq, input_indexer = prepare_datasets(data_setting= '50', batch_size= 8, max_len= 1500)
+        predictor = Predictor(model=model, device=device)
+        train_set, dev_set, test_set, train_labels, train_label_freq, input_indexer = prepare_datasets(
+            data_setting='50', batch_size=8, max_len=1500)
         dataLoader = DataLoader(train_set, batch_size=8, shuffle=True, num_workers=1)
         for batch in dataLoader:
             print(batch)
-            output = predictor.predict(text = batch['text'])
+            output = predictor.predict(text=batch['text'])
             print(output)
             break
-    elif(run_mode =='train'):
-        print(run_mode)
-        
+    elif run_mode == 'train':
         print(run_mode)
         if not os.path.exists('../results'):
             os.makedirs('../results')
         FORMAT = '%(asctime)-15s %(message)s'
-        logging.basicConfig(filename='../results/app.log', filemode='w', format=FORMAT, level=getattr(logging, args.log.upper()))
+        logging.basicConfig(filename='../results/app.log', filemode='w', format=FORMAT,
+                            level=getattr(logging, args.log.upper()))
         logging.info(f'{args}\n')
         print(run_mode)
         random.seed(args.random_seed)

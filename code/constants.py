@@ -14,7 +14,7 @@ DIAG_CODE_DESC_FILE_PATH = '../mimicdata/D_ICD_DIAGNOSES.csv'
 PROC_CODE_DESC_FILE_PATH = '../mimicdata/D_ICD_PROCEDURES.csv'
 ICD_DESC_FILE_PATH = '../mimicdata/ICD9_descriptions'
 
-VOCAB_FILE_PATH = '../mimicdata/generated/vocab.csv'
+VOCAB_FILE_PATH = '../mimicdata/generated/vocab_zh.csv'
 EMBED_FILE_PATH = '../mimicdata/generated/vocab.embed'
 CODE_FREQ_PATH = '../mimicdata/generated/code_freq.csv'
 CODE_DESC_VECTOR_PATH = '../mimicdata/generated/code_desc_vectors.csv'
@@ -76,7 +76,7 @@ def get_args():
     parser.add_argument(
         '--max_len',
         type=int,
-        default=1500,
+        default=200,
         help='Max Length of discharge summary'
     )
 

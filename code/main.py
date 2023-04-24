@@ -14,6 +14,7 @@ import sys
 from predictor import Predictor
 from data import load_dataset
 from torch.utils.data import DataLoader
+import jieba
 
 
 def get_hyper_params_combinations(args):
@@ -30,9 +31,9 @@ def get_hyper_params_combinations(args):
 
 
 def run(args, device):
-    train_set, dev_set, test_set, train_labels, train_label_freq, input_indexer = prepare_datasets(args.data_setting,
-                                                                                                   args.batch_size,
-                                                                                                   args.max_len)
+    train_set, dev_set, test_set, train_labels, train_label_freq, input_indexer = prepare_datasets(data_setting="unittest",
+                                                                                                   batch_size=1,
+                                                                                                   max_len=args.max_len)
     logging.info(f'Taining labels are: {train_labels}\n')
     embed_weights = load_embedding_weights()
     label_desc = None  # load_label_embedding(train_labels, input_indexer.index_of(constants.PAD_SYMBOL))

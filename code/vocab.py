@@ -32,8 +32,9 @@ def regex_change(line):
         (周五) | 
         (周六)
     """, re.VERBOSE)
-    #剔除所有数字
+    # 剔除英文字符
     decimal_regex = re.compile(r"[^a-zA-Z]\d+")
+    # 剔除所有数字
     num_regex = re.compile(r"[+-]?\d+(\.\d*)?")
     #剔除空格
     space_regex = re.compile(r"\s+")

@@ -21,9 +21,8 @@ def remove_stopwords(text):
 def load_dataset(data_setting, batch_size, split):
     print(f'{GENERATED_DIR}/{split}_{data_setting}.csv')
     data = pd.read_csv(f'{GENERATED_DIR}/{split}_{data_setting}.csv', dtype={'LENGTH': int})
-    len_stat = data['LENGTH'].describe()
-    logging.info(f'{split} set length stats:\n{len_stat}')
-
+    #len_stat = data['LENGTH'].describe()
+    #logging.info(f'{split} set length stats:\n{len_stat}')
     if data_setting == FULL:
         code_df = pd.read_csv(f'{CODE_FREQ_PATH}', dtype={'code': str})
         all_codes = ';'.join(map(str, code_df['code'].values.tolist()))
@@ -43,7 +42,7 @@ def load_dataset(data_setting, batch_size, split):
 
     for i, x in enumerate(mlb.classes_):
         data[x] = temp[:, i]
-    data.drop(['LABELS', 'LENGTH'], axis=1, inplace=True)
+    data.drop(['LABELS'], axis=1, inplace=True)
 
     if data_setting == FULL:
         data = data[:-1]
@@ -52,6 +51,7 @@ def load_dataset(data_setting, batch_size, split):
     label_freq = list(data[code_list].sum(axis=0))
     hadm_ids = data['HADM_ID'].values.tolist()
     texts = data['TEXT'].values.tolist()
+    print("load_dataset")
     labels = data[code_list].values.tolist()
     item_count = (len(texts) // batch_size) * batch_size
     logging.info(f'{split} set true item count: {item_count}\n\n')
@@ -125,15 +125,19 @@ def load_label_embedding(labels, pad_index):
     code_desc = torch.tensor(code_desc, dtype=torch.long)
     return code_desc
 
-
+# data: 输入数据集，是一个数组
 def index_text(data, indexer, max_len, split):
+    print("Indexing text......")
+    print(data)
     data_indexed = []
     lens = []
     oov_word_frac = []
     for text in data:
+        print(text)
         num_oov_words = 0
+        # 将数组设置为max_len等长
         text_indexed = [indexer.index_of(PAD_SYMBOL)]*max_len
-        tokens = text.split()
+        tokens = list(jieba.cut(text, cut_all=False))
         text_len = max_len if len(tokens) > max_len else len(tokens)
         lens.append(text_len)
         for i in range(text_len):
@@ -144,7 +148,8 @@ def index_text(data, indexer, max_len, split):
                 text_indexed[i] = indexer.index_of(UNK_SYMBOL)
         oov_word_frac.append(num_oov_words/text_len)
         data_indexed.append(text_indexed)
-    logging.info(f'{split} dataset has on average {sum(oov_word_frac)/len(oov_word_frac)} oov words per discharge summary')
+        print(text_indexed)
+    #logging.info(f'{split} dataset has on average {sum(oov_word_frac)/len(oov_word_frac)} oov words per discharge summary')
     return data_indexed, lens
 
 
@@ -171,10 +176,12 @@ class ICD_Dataset(Dataset):
 
 def prepare_datasets(data_setting, batch_size, max_len):
     train_data, dev_data, test_data = load_datasets(data_setting, batch_size)
+    print("train_data")
+    print(train_data)
     input_indexer = Indexer()
     input_indexer.add_and_get_index(PAD_SYMBOL)
     input_indexer.add_and_get_index(UNK_SYMBOL)
-    with open(VOCAB_FILE_PATH, 'r') as fin:
+    with open(VOCAB_FILE_PATH, 'r', encoding="utf-8") as fin:
         for line in fin:
             word = line.strip()
             input_indexer.add_and_get_index(word)

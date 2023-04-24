@@ -206,22 +206,6 @@ def split_data(labeled_notes_filename='notes_labeled.csv', is_full=True):
             split_labeled_notes_df.to_csv(f'{constants.GENERATED_DIR}/{split}_{content}.csv', index=False)
 
 
-
-def build_vocab(train_full_filename='train_full.csv', out_filename='vocab.csv'):
-    train_df = pd.read_csv(f'{constants.GENERATED_DIR}/{train_full_filename}')
-    desc_dt = load_code_desc()
-    desc_series = pd.Series(list(desc_dt.values())).apply(lambda text: clean_text(text, trantab, my_stopwords, stemmer))
-
-    full_text_series = train_df['TEXT'].append(desc_series, ignore_index=True)
-    cv = CountVectorizer(min_df=1)
-    cv.fit(full_text_series)
-
-    out_file_path = f'{constants.GENERATED_DIR}/{out_filename}'
-    with open(out_file_path, 'w') as fout:
-        for word in cv.get_feature_names():
-            fout.write(f'{word}\n')
-
-
 def load_code_desc():
     desc_dict = defaultdict(str)
     with open(constants.DIAG_CODE_DESC_FILE_PATH, 'r') as descfile:

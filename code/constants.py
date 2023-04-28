@@ -6,7 +6,7 @@ UNK_SYMBOL = "<UNK>"
 DATA_DIR = '../mimicdata/'
 CAML_DIR = '../mimicdata/caml/'
 
-GENERATED_DIR = '../mimicdata/generated/'
+GENERATED_DIR = '../data/hainan/'
 NOTEEVENTS_FILE_PATH = '../mimicdata/NOTEEVENTS.csv'
 DIAGNOSES_FILE_PATH = '../mimicdata/DIAGNOSES_ICD.csv'
 PORCEDURES_FILE_PATH = '../mimicdata/PROCEDURES_ICD.csv'
@@ -14,9 +14,9 @@ DIAG_CODE_DESC_FILE_PATH = '../mimicdata/D_ICD_DIAGNOSES.csv'
 PROC_CODE_DESC_FILE_PATH = '../mimicdata/D_ICD_PROCEDURES.csv'
 ICD_DESC_FILE_PATH = '../mimicdata/ICD9_descriptions'
 
-VOCAB_FILE_PATH = '../mimicdata/generated/vocab_zh.csv'
+VOCAB_FILE_PATH = '../data/hainan/vocab_zh.csv'
 EMBED_FILE_PATH = '../mimicdata/generated/vocab.embed'
-CODE_FREQ_PATH = '../mimicdata/generated/code_freq.csv'
+CODE_FREQ_PATH = '../data/hainan/code_freq.csv'
 CODE_DESC_VECTOR_PATH = '../mimicdata/generated/code_desc_vectors.csv'
 
 FULL = 'full'

@@ -26,9 +26,8 @@ def load_dataset(data_setting, batch_size, split):
     if data_setting == FULL:
         code_df = pd.read_csv(f'{CODE_FREQ_PATH}', dtype={'code': str})
         all_codes = ';'.join(map(str, code_df['code'].values.tolist()))
-        data = data.append({'HADM_ID': -1, 'TEXT': 'remove', 'LABELS': all_codes, 'length': 6},
+        data = data.append({'HADM_ID': -1, 'TEXT': 'remove', 'LABELS': all_codes},
                         ignore_index=True)
-
     mlb = MultiLabelBinarizer()
     data['LABELS'] = data['LABELS'].apply(lambda x: str(x).split(';'))
     code_counts = list(data['LABELS'].str.len())
@@ -128,12 +127,10 @@ def load_label_embedding(labels, pad_index):
 # data: 输入数据集，是一个数组
 def index_text(data, indexer, max_len, split):
     print("Indexing text......")
-    print(data)
     data_indexed = []
     lens = []
     oov_word_frac = []
     for text in data:
-        print(text)
         num_oov_words = 0
         # 将数组设置为max_len等长
         text_indexed = [indexer.index_of(PAD_SYMBOL)]*max_len
@@ -148,7 +145,6 @@ def index_text(data, indexer, max_len, split):
                 text_indexed[i] = indexer.index_of(UNK_SYMBOL)
         oov_word_frac.append(num_oov_words/text_len)
         data_indexed.append(text_indexed)
-        print(text_indexed)
     #logging.info(f'{split} dataset has on average {sum(oov_word_frac)/len(oov_word_frac)} oov words per discharge summary')
     return data_indexed, lens
 
@@ -176,8 +172,6 @@ class ICD_Dataset(Dataset):
 
 def prepare_datasets(data_setting, batch_size, max_len):
     train_data, dev_data, test_data = load_datasets(data_setting, batch_size)
-    print("train_data")
-    print(train_data)
     input_indexer = Indexer()
     input_indexer.add_and_get_index(PAD_SYMBOL)
     input_indexer.add_and_get_index(UNK_SYMBOL)

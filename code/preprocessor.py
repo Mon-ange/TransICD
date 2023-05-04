@@ -301,7 +301,7 @@ if __name__ == '__main__':
     FORMAT = '%(asctime)-15s %(message)s'
     logging.basicConfig(filename='../results/preprocess.log', filemode='w', format=FORMAT, level=logging.INFO)
     # hadm_id_set is a set which contains all the id representing each patient's stay.
-    hadm_id_set, disch_full_filename = write_discharge_summaries()
+    hadm_id_set, disch_full_filename = write_discharge_summaries() # 生成summary ，论文里面这是一个步骤
     filtered_codes_filename = combine_diag_proc_codes(hadm_id_set)
     labeled_notes_filename = combine_notes_codes(disch_full_filename, filtered_codes_filename)
     split_data()

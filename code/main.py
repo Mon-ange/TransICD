@@ -35,7 +35,6 @@ def run(args, device):
                                                                                                    batch_size=50,
                                                                                                    max_len=args.max_len)
     print("print dataset...................................................................")
-    input()
     logging.info(f'Taining labels are: {train_labels}\n')
     embed_weights = load_embedding_weights()
     label_desc = None  # load_label_embedding(train_labels, input_indexer.index_of(constants.PAD_SYMBOL))

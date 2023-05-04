@@ -53,13 +53,13 @@ def calculate_codefreq(df):
 def write_codefreq(df,path):
     df.to_csv(path + '/code_freq.csv', index=False)
 
-
 if __name__ == '__main__':
     df = read_csv('../../data/hainan/dataset_triage.csv')
     freq_df = calculate_codefreq(df)
     write_codefreq(freq_df,'../../data/hainan')
     train_set, test_set, dev_set = split(df)
     write_dataset(train_set, test_set, dev_set, '../../data/hainan')
+
 
 
 

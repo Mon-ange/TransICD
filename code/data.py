@@ -95,7 +95,7 @@ def load_embedding_weights():
     W = []
     # PAD and UNK already in embed file
 
-    with open(EMBED_FILE_PATH) as ef:
+    with open(EMBED_FILE_PATH, encoding="utf-8") as ef:
         for line in ef:
             line = line.rstrip().split()
             vec = np.array(line[1:]).astype(np.double)
@@ -110,7 +110,7 @@ def load_label_embedding(labels, pad_index):
     code_desc = []
     desc_dt = {}
     max_desc_len = 0
-    with open(f'{CODE_DESC_VECTOR_PATH}', 'r') as fin:
+    with open(f'{CODE_DESC_VECTOR_PATH}', 'r', encoding="utf-8") as fin:
         for line in fin:
             items = line.strip().split()
             code = items[0]

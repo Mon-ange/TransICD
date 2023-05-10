@@ -95,14 +95,14 @@ def embed_words(disch_full_filename='dataset_triage.csv', embed_size=128, out_fi
     #logging.info('\n**********************************************\n')
     return out_filename
 
-def map_vocab_to_embed(vocab_filename='vocab.csv', embed_filename='disch_full.w2v', out_filename='vocab.embed'):
+def map_vocab_to_embed(vocab_filename='vocab_zh.csv', embed_filename='disch_full.w2v', out_filename='vocab_zh.embed'):
     model = Word2Vec.load(f'{constants.GENERATED_DIR}/{embed_filename}')
     wv = model.wv
     del model
 
     embed_size = len(wv.word_vec(wv.index_to_key[0]))
     word_to_idx = {}
-    with open(f'{constants.GENERATED_DIR}/{vocab_filename}', 'r') as fin, open(f'{constants.GENERATED_DIR}/{out_filename}', 'w') as fout:
+    with open(f'{constants.GENERATED_DIR}/{vocab_filename}', 'r', encoding="utf-8") as fin, open(f'{constants.GENERATED_DIR}/{out_filename}', 'w',encoding="utf-8") as fout:
         pad_embed = np.zeros(embed_size)
         unk_embed = np.random.randn(embed_size)
         unk_embed_normalized = unk_embed / float(np.linalg.norm(unk_embed) + 1e-6)
@@ -123,5 +123,6 @@ def map_vocab_to_embed(vocab_filename='vocab.csv', embed_filename='disch_full.w2
 if __name__ == "__main__":
     print("hello world")
     #vocab = build_vocab()
-    embed_words()
+    #embed_words()
+    map_vocab_to_embed()
     #print(vocab)

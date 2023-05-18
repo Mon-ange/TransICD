@@ -1,3 +1,6 @@
+import csv
+import os
+
 import jieba
 import pandas as pd
 import torchtext
@@ -8,6 +11,7 @@ from nltk.corpus import stopwords
 import multiprocessing
 from gensim.models import Word2Vec
 import numpy as np
+from collections import defaultdict
 
 my_stopwords = set([stopword for stopword in stopwords.words('chinese')])
 
@@ -57,13 +61,36 @@ def tokenizer(s,word = False):
         s = jieba.cut(s, cut_all=False)
         r = " ".join([x for x in s if x not in my_stopwords]).split()
     return r
+
+
+def load_code_desc(code_desc_filename="icd_description_zh.csv"):
+    code_desc_df = pd.read_csv(f'{constants.GENERATED_DIR}/{code_desc_filename}', encoding='utf-8')
+    code_text_series = code_desc_df['IN_DIAGNOSIS_CN']
+    return code_text_series
+
+def load_code_and_desc(code_desc_filename="icd_description_zh.csv"):
+    desc_dict = defaultdict(str)
+    desc_df = pd.read_csv(f'{constants.GENERATED_DIR}/{code_desc_filename}', encoding='utf-8')
+    # for row in desc_df.iterrows():
+    #     os.system("pause")
+    #     print('code: ', row['IN_DIAGNOSIS_CODE'],"  desc:",row['IN_DIAGNOSIS_CN'])
+    #     desc_dict[row['IN_DIAGNOSIS_CODE'].strip()] = row['IN_DIAGNOSIS_CN'].strip()
+    # return desc_dict
+    return desc_df
+
+
+
 def build_vocab(train_full_filename='dataset_triage.csv', out_filename='vocab_zh.csv'):
-    train_df = pd.read_csv(f'{constants.GENERATED_DIR}/{train_full_filename}')
+    # 导入病案描述文本生成词典
+    train_df = pd.read_csv(f'{constants.GENERATED_DIR}/{train_full_filename}', encoding='utf-8')
     full_text_series = train_df['Column2']
     counter = Counter()
     for triage in full_text_series:
         counter.update(tokenizer(triage.strip(),False))
-    # print(counter)
+    # 导入ICD编码及其描述生成词典
+    code_text_series = load_code_desc()
+    for code_text in code_text_series:
+        counter.update(tokenizer(code_text.strip(),False))
     vocab = torchtext.vocab.vocab(counter)
     out_file_path = f'{constants.GENERATED_DIR}/{out_filename}'
 
@@ -74,18 +101,15 @@ def build_vocab(train_full_filename='dataset_triage.csv', out_filename='vocab_zh
 
 
 def embed_words(disch_full_filename='dataset_triage.csv', embed_size=128, out_filename='disch_full.w2v'):
-    disch_df = pd.read_csv(f'{constants.GENERATED_DIR}/{disch_full_filename}')
+    disch_df = pd.read_csv(f'{constants.GENERATED_DIR}/{disch_full_filename}', encoding="utf-8")
+    desc_df = load_code_desc()
     sentences = [tokenizer(text.strip(),False) for text in disch_df['Column2']]
-    # desc_dt = load_code_desc()
-    #for desc in desc_dt.values():
-    #    sentences.append(clean_text(desc, trantab, my_stopwords, stemmer).split())
+    for desc in desc_df:
+        sentences.append(tokenizer(desc.strip()))
     num_cores = multiprocessing.cpu_count()
     min_count = 0
     window = 5
     num_negatives = 5
-    #logging.info('\n**********************************************\n')
-    #logging.info('Training CBOW embedding...')
-    #logging.info(f'Params: embed_size={embed_size}, workers={num_cores-1}, min_count={min_count}, window={window}, negative={num_negatives}')
     print(f'Params: embed_size={embed_size}, workers={num_cores-1}, min_count={min_count}, window={window}, negative={num_negatives}')
     w2v_model = Word2Vec(min_count=min_count, window=window, vector_size=embed_size, negative=num_negatives, workers=num_cores-1)
     w2v_model.build_vocab(sentences, progress_per=10000)
@@ -95,11 +119,27 @@ def embed_words(disch_full_filename='dataset_triage.csv', embed_size=128, out_fi
     #logging.info('\n**********************************************\n')
     return out_filename
 
+def vectorize_code_desc(out_filename='code_desc_vectors_zh.csv', vocab_filename='vocab_zh.csv'):
+    word_to_idx = {}
+    word_to_idx[constants.PAD_SYMBOL] = 0
+    word_to_idx[constants.UNK_SYMBOL] = 1
+    with open(f'{constants.GENERATED_DIR}/{vocab_filename}', 'r', encoding="utf-8") as fin:
+        for line in fin:
+            word_to_idx[line.strip()] = len(word_to_idx)
+    desc_df = load_code_and_desc()
+    with open(f'{constants.GENERATED_DIR}/{out_filename}', 'w') as fout:
+        w = csv.writer(fout, delimiter=' ')
+        w.writerow(["CODE", "VECTOR"])
+        for idx,desc in desc_df.iterrows():
+            code = desc['IN_DIAGNOSIS_CODE']
+            tokens = tokenizer(desc['IN_DIAGNOSIS_CN'])
+            inds = [word_to_idx[t] if t in word_to_idx.keys() else word_to_idx[constants.UNK_SYMBOL] for t in tokens]
+            w.writerow([code] + [str(i) for i in inds])
+
 def map_vocab_to_embed(vocab_filename='vocab_zh.csv', embed_filename='disch_full.w2v', out_filename='vocab_zh.embed'):
     model = Word2Vec.load(f'{constants.GENERATED_DIR}/{embed_filename}')
     wv = model.wv
     del model
-
     embed_size = len(wv.word_vec(wv.index_to_key[0]))
     word_to_idx = {}
     with open(f'{constants.GENERATED_DIR}/{vocab_filename}', 'r', encoding="utf-8") as fin, open(f'{constants.GENERATED_DIR}/{out_filename}', 'w',encoding="utf-8") as fout:
@@ -124,5 +164,6 @@ if __name__ == "__main__":
     print("hello world")
     #vocab = build_vocab()
     #embed_words()
-    map_vocab_to_embed()
+    #map_vocab_to_embed()
+    vectorize_code_desc()
     #print(vocab)

@@ -58,6 +58,8 @@ if __name__ == '__main__':
     freq_df = calculate_codefreq(df)
     write_codefreq(freq_df,'../../data/hainan')
     train_set, test_set, dev_set = split(df)
+    print(train_set)
+    print(dev_set)
     write_dataset(train_set, test_set, dev_set, '../../data/hainan')
 
 

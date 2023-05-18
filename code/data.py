@@ -8,6 +8,7 @@ from sklearn.preprocessing import MultiLabelBinarizer
 from nltk.corpus import stopwords
 from utils import *
 from constants import *
+from vocab import tokenizer
 
 
 def remove_stopwords(text):
@@ -134,8 +135,10 @@ def index_text(data, indexer, max_len, split):
         num_oov_words = 0
         # 将数组设置为max_len等长
         text_indexed = [indexer.index_of(PAD_SYMBOL)]*max_len
-        tokens = list(jieba.cut(text, cut_all=False))
+        tokens = tokenizer(text)#list(jieba.cut(text, cut_all=False))
         text_len = max_len if len(tokens) > max_len else len(tokens)
+        if text_len == 0:
+            continue
         lens.append(text_len)
         for i in range(text_len):
             if indexer.index_of(tokens[i]) >= 0:

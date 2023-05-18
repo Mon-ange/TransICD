@@ -32,7 +32,7 @@ def get_hyper_params_combinations(args):
 
 def run(args, device):
     train_set, dev_set, test_set, train_labels, train_label_freq, input_indexer = prepare_datasets(data_setting="full",
-                                                                                                   batch_size=50,
+                                                                                                   batch_size=8,
                                                                                                    max_len=args.max_len)
     print("print dataset...................................................................")
     logging.info(f'Taining labels are: {train_labels}\n')

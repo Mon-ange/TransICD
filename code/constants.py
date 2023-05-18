@@ -17,7 +17,7 @@ ICD_DESC_FILE_PATH = '../mimicdata/ICD9_descriptions'
 VOCAB_FILE_PATH = '../data/hainan/vocab_zh.csv'
 EMBED_FILE_PATH = '../data/hainan/vocab_zh.embed'
 CODE_FREQ_PATH = '../data/hainan/code_freq.csv'
-CODE_DESC_VECTOR_PATH = '../mimicdata/generated/code_desc_vectors.csv'
+CODE_DESC_VECTOR_PATH = '../data/hainan/code_desc_vectors_zh.csv'
 
 FULL = 'full'
 TOP50 = '50'

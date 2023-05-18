@@ -19,7 +19,6 @@ def train(model, train_set, dev_set, test_set, hyper_params, batch_size, device)
         model.train()
         for batch in train_loader:
             texts = batch['text']
-            lens = batch['length']
             targets = batch['codes']
 
             texts = texts.to(device)

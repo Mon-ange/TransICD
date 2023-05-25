@@ -1,36 +1,29 @@
-2023-05-17 23:44:59,014 Namespace(log='INFO', random_seed=271, mode='train', data_setting='50', model='TransICD', num_epoch=[30, 35, 40], learning_rate=[0.001], batch_size=8, max_len=200, embed_size=128, freeze_embed=True, label_attn_expansion=2, num_trans_layers=2, num_attn_heads=8, trans_forward_expansion=4, dropout_rate=0.1)
+2023-05-25 00:03:29,249 Namespace(log='INFO', random_seed=271, mode='train', data_setting='50', model='TransICD', num_epoch=[30, 35, 40, 45, 70, 100], learning_rate=[0.01], batch_size=8, max_len=200, embed_size=128, freeze_embed=True, label_attn_expansion=2, num_trans_layers=2, num_attn_heads=8, trans_forward_expansion=4, dropout_rate=0.1)
 
-2023-05-17 23:44:59,634 In train set, average code counts per discharge summary: 1.0014764552508404
-2023-05-17 23:44:59,664 Final number of labels/codes: 48
-2023-05-17 23:44:59,742 train set true item count: 31832
-
-
-2023-05-17 23:44:59,929 In dev set, average code counts per discharge summary: 1.0044285310468293
-2023-05-17 23:44:59,940 Final number of labels/codes: 48
-2023-05-17 23:44:59,980 dev set true item count: 10608
+2023-05-25 00:03:29,862 In train set, average code counts per discharge summary: 1.0014764552508404
+2023-05-25 00:03:29,892 Final number of labels/codes: 48
+2023-05-25 00:03:29,974 train set true item count: 31832
 
 
-2023-05-17 23:45:00,159 In test set, average code counts per discharge summary: 1.004429365752521
-2023-05-17 23:45:00,171 Final number of labels/codes: 48
-2023-05-17 23:45:00,209 test set true item count: 10608
+2023-05-25 00:03:30,173 In dev set, average code counts per discharge summary: 1.0044285310468293
+2023-05-25 00:03:30,184 Final number of labels/codes: 48
+2023-05-25 00:03:30,223 dev set true item count: 10608
 
 
-2023-05-17 23:45:00,272 Size of training vocabulary including PAD, UNK: 58350
-2023-05-17 23:45:00,275 Building prefix dict from the default dictionary ...
-2023-05-17 23:45:00,276 Loading model from cache C:\Users\acguc\AppData\Local\Temp\jieba.cache
-2023-05-17 23:45:01,067 Loading model cost 0.792 seconds.
-2023-05-17 23:45:01,067 Prefix dict has been built successfully.
-2023-05-17 23:46:57,159 Taining labels are: ['A41.901', 'C11.900', 'C16.900', 'C18.900', 'C20.x00', 'C22.900', 'C34.90A', 'C50.900', 'D25.900', 'E11.401+', 'E11.900', 'H25.900', 'H81.901', 'I10.x05', 'I10.x0H', 'I24.901', 'I25.103', 'I61.900', 'I64.x00', 'J18.000', 'J18.900', 'J44.100', 'J98.414', 'K35.900', 'K40.901', 'K63.500', 'K65.000', 'K74.607', 'K85.900', 'K92.207', 'K92.208', 'K92.210', 'M06.900', 'N18.001', 'N63.x00', 'O34.201', 'O42.900', 'O47.100', 'O47.900', 'O60.200', 'P07.30A', 'R10.402', 'R50.900', 'R93.203', 'Z34.900', 'Z35.900', 'Z51.102', 'Z51.805']
+2023-05-25 00:03:30,398 In test set, average code counts per discharge summary: 1.004429365752521
+2023-05-25 00:03:30,408 Final number of labels/codes: 48
+2023-05-25 00:03:30,444 test set true item count: 10608
 
-2023-05-17 23:47:06,031 Total token count (including PAD, UNK) of full preprocessed discharge summaries: 58350
-2023-05-17 23:47:06,890 Training with: HyperParams(learning_rate=0.001, num_epoch=30)
-2023-05-17 23:47:06,891 Training Started...
-2023-05-18 02:00:00,971 Training finished.
 
-2023-05-18 02:00:52,389 train Accuracy: 0.0
-2023-05-18 02:00:52,389 train f1 score (micro): 0.0
-2023-05-18 02:00:52,390 train f1 score (macro): 0.0
-2023-05-18 02:00:52,390 train auc score (micro): 0.7231839182535719
-2023-05-18 02:00:52,390 train auc score (macro): 0.5112395211733923
-2023-05-18 02:00:52,390 train precision at ks [1, 5, 8, 10, 15]: [0.09738335435056747, 0.07288776796973519, 0.05653767339218159, 0.05081021437578814, 0.04101092896174863]
+2023-05-25 00:03:30,510 Size of training vocabulary including PAD, UNK: 58350
+2023-05-25 00:03:30,513 Building prefix dict from the default dictionary ...
+2023-05-25 00:03:30,514 Loading model from cache C:\Users\acguc\AppData\Local\Temp\jieba.cache
+2023-05-25 00:03:31,285 Loading model cost 0.772 seconds.
+2023-05-25 00:03:31,285 Prefix dict has been built successfully.
+2023-05-25 00:05:27,925 Taining labels are: ['A41.901', 'C11.900', 'C16.900', 'C18.900', 'C20.x00', 'C22.900', 'C34.90A', 'C50.900', 'D25.900', 'E11.401+', 'E11.900', 'H25.900', 'H81.901', 'I10.x05', 'I10.x0H', 'I24.901', 'I25.103', 'I61.900', 'I64.x00', 'J18.000', 'J18.900', 'J44.100', 'J98.414', 'K35.900', 'K40.901', 'K63.500', 'K65.000', 'K74.607', 'K85.900', 'K92.207', 'K92.208', 'K92.210', 'M06.900', 'N18.001', 'N63.x00', 'O34.201', 'O42.900', 'O47.100', 'O47.900', 'O60.200', 'P07.30A', 'R10.402', 'R50.900', 'R93.203', 'Z34.900', 'Z35.900', 'Z51.102', 'Z51.805']
+
+2023-05-25 00:05:35,687 Total token count (including PAD, UNK) of full preprocessed discharge summaries: 58350
+2023-05-25 00:05:36,600 Training with: HyperParams(learning_rate=0.01, num_epoch=30)
+2023-05-25 00:05:36,601 Training Started...
+2023-05-25 02:27:27,745 Training finished.
 

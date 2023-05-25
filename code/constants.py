@@ -53,7 +53,7 @@ def get_args():
     parser.add_argument(
         '--num_epoch',
         type=int,
-        default=[30, 35, 40],
+        default=[30, 35, 40, 45, 70, 100],
         nargs='+',
         help='Number of epochs to train.'
     )
@@ -61,7 +61,7 @@ def get_args():
     parser.add_argument(
         '--learning_rate',
         type=float,
-        default=[0.001],
+        default=[0.01],
         nargs='+',
         help='Initial learning rate.'
     )

@@ -116,8 +116,10 @@ def precision_at_k(true_labels, pred_probs):
 def compute_scores(probabs, targets, hyper_params, dtset, full_hadm_ids=None, full_attn_weights=None):
     probabs = np.array(probabs)
     targets = np.array(targets)
-
-    preds = np.rint(probabs)  # (probabs >= 0.5)
+    # preds = np.rint(probabs)  # (probabs >= 0.5)
+    index = np.argmax(probabs)
+    preds = np.zeros_like(probabs)
+    preds[index] = 1
     accuracy = metrics.accuracy_score(targets, preds)
     f1_score_micro = metrics.f1_score(targets, preds, average='micro')
     f1_score_macro = metrics.f1_score(targets, preds, average='macro')

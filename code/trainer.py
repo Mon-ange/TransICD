@@ -68,7 +68,7 @@ def evaluate(model, loader, device, dtset):
         # Set the model to evaluation mode
         model.eval()
         for batch in loader:
-            hadm_ids = batch['hadm_id']
+            #hadm_ids = batch['hadm_id']
             texts = batch['text']
             lens = batch['length']
             targets = batch['codes']
@@ -79,9 +79,9 @@ def evaluate(model, loader, device, dtset):
 
             fin_targets.extend(targets.tolist())
             fin_probabs.extend(torch.sigmoid(outputs).detach().cpu().tolist())
-            if dtset == 'test' and attn_weights is not None:
-                full_hadm_ids.extend(hadm_ids)
-                full_attn_weights.extend(attn_weights.detach().cpu().tolist())
+            #if dtset == 'test' and attn_weights is not None:
+            #    full_hadm_ids.extend(hadm_ids)
+            #    full_attn_weights.extend(attn_weights.detach().cpu().tolist())
     return fin_probabs, fin_targets, full_hadm_ids, full_attn_weights
 
 
@@ -117,9 +117,10 @@ def compute_scores(probabs, targets, hyper_params, dtset, full_hadm_ids=None, fu
     probabs = np.array(probabs)
     targets = np.array(targets)
     # preds = np.rint(probabs)  # (probabs >= 0.5)
-    index = np.argmax(probabs)
+    index = np.argmax(probabs, axis=1)
     preds = np.zeros_like(probabs)
-    preds[index] = 1
+    for i in range(len(probabs)):
+        preds[i, index[i]] = 1
     accuracy = metrics.accuracy_score(targets, preds)
     f1_score_micro = metrics.f1_score(targets, preds, average='micro')
     f1_score_macro = metrics.f1_score(targets, preds, average='macro')

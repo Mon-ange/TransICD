@@ -166,7 +166,7 @@ class ICD_Dataset(Dataset):
         return len(self.labels[0])
 
     def __getitem__(self, index):
-        hadm_id = torch.tensor(self.hadm_ids[index])
+        hadm_id = self.hadm_ids[index]
         text = torch.tensor(self.texts[index], dtype=torch.long)
         length = torch.tensor(self.lens[index], dtype=torch.long)
         codes = torch.tensor(self.labels[index], dtype=torch.float)

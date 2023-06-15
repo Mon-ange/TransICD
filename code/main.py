@@ -41,6 +41,7 @@ def run(args, device):
     model = None
     for hyper_params in get_hyper_params_combinations(args):
         if args.model == 'Transformer':
+            print(f'train_set code count:{train_set.get_code_count()}')
             model = Transformer(embed_weights, args.embed_size, args.freeze_embed, args.max_len, args.num_trans_layers,
                                 args.num_attn_heads, args.trans_forward_expansion, train_set.get_code_count(),
                                 args.dropout_rate, device)

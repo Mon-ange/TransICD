@@ -6,33 +6,41 @@ import torch.nn.functional as F
 import torch.optim as optim
 from run_manager import RunManager
 from torch.utils.data import DataLoader
+import torch.nn as nn
 
 def train(model, train_set, dev_set, test_set, hyper_params, batch_size, device):
     train_loader = DataLoader(train_set, batch_size=batch_size, shuffle=True, num_workers=1)
     m = RunManager()
     optimizer = optim.AdamW(model.parameters(), lr=hyper_params.learning_rate)
-
     logging.info("Training Started...")
     m.begin_run(hyper_params, model, train_loader)
+    criterion = nn.CrossEntropyLoss()
     for epoch in range(hyper_params.num_epoch):
         m.begin_epoch(epoch + 1)
         model.train()
         for batch in train_loader:
             texts = batch['text']
+            #print(texts.numpy())
             targets = batch['codes']
-
+            #print(targets.numpy())
             texts = texts.to(device)
             targets = targets.to(device)
-            outputs, ldam_outputs, _ = model(texts, targets)
-
-            if ldam_outputs is not None:
-                loss = F.binary_cross_entropy_with_logits(ldam_outputs, targets)
-            else:
-                loss = F.binary_cross_entropy_with_logits(outputs, targets)
-
             optimizer.zero_grad()
+            outputs, ldam_outputs, attn_weights = model(texts, targets)
+            loss = criterion(outputs, targets)
             loss.backward()
             optimizer.step()
+            #print("next batch")
+            #outputs, ldam_outputs, _ = model(texts, targets)
+
+            #if ldam_outputs is not None:
+            #    loss = F.binary_cross_entropy_with_logits(ldam_outputs, targets)
+            #else:
+            #    loss = F.binary_cross_entropy_with_logits(outputs, targets)
+
+
+            #loss.backward()
+            #optimizer.step()
             m.track_loss(loss)
             # m.track_num_correct(preds, affinities)
         torch.save(model, f'../results/model.pt')
@@ -121,6 +129,13 @@ def compute_scores(probabs, targets, hyper_params, dtset, full_hadm_ids=None, fu
     preds = np.zeros_like(probabs)
     for i in range(len(probabs)):
         preds[i, index[i]] = 1
+    np.savetxt("../results/probabs_debug.txt", probabs)
+    np.savetxt("../results/preds_debug.txt", preds)
+    np.savetxt("../results/targets.txt", targets)
+    logging.basicConfig(filename='../results/debug.log', filemode='w', format='%(asctime)-15s %(message)s')
+    logging.info(preds)
+    logging.info("target")
+    logging.info(targets)
     accuracy = metrics.accuracy_score(targets, preds)
     f1_score_micro = metrics.f1_score(targets, preds, average='micro')
     f1_score_macro = metrics.f1_score(targets, preds, average='macro')

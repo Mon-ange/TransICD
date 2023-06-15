@@ -46,14 +46,14 @@ def get_args():
     parser.add_argument(
         '--model',
         type=str,
-        default='TransICD',
+        default='Transformer',
         help='Transformer or TransICD models'
     )
 
     parser.add_argument(
         '--num_epoch',
         type=int,
-        default=[30, 35, 40, 45, 70, 100],
+        default=[100],
         nargs='+',
         help='Number of epochs to train.'
     )
@@ -61,7 +61,7 @@ def get_args():
     parser.add_argument(
         '--learning_rate',
         type=float,
-        default=[0.01],
+        default=[0.001],
         nargs='+',
         help='Initial learning rate.'
     )
@@ -69,7 +69,7 @@ def get_args():
     parser.add_argument(
         '--batch_size',
         type=int,
-        default=8,
+        default=128,
         help='Batch size. Must divide evenly into the dataset sizes.'
     )
 

@@ -1,4 +1,6 @@
 import logging
+import os
+
 import torch
 import jieba
 import numpy as np
@@ -34,7 +36,7 @@ def load_dataset(data_setting, batch_size, split):
     code_counts = list(data['LABELS'].str.len())
     avg_code_counts = sum(code_counts)/len(code_counts)
     logging.info(f'In {split} set, average code counts per discharge summary: {avg_code_counts}')
-    mlb.fit(data['LABELS'])
+    binariedList = mlb.fit_transform(data['LABELS'])
     temp = mlb.transform(data['LABELS'])
     if mlb.classes_[-1] == 'nan':
         mlb.classes_ = mlb.classes_[:-1]
@@ -57,7 +59,7 @@ def load_dataset(data_setting, batch_size, split):
     logging.info(f'{split} set true item count: {item_count}\n\n')
     return {'hadm_ids': hadm_ids[:item_count],
             'texts': texts[:item_count],
-            'targets': labels[:item_count],
+            'targets': binariedList[:item_count],
             'labels': code_list,
             'label_freq': label_freq}
 
@@ -104,6 +106,7 @@ def load_embedding_weights():
             W.append(vec)
     logging.info(f'Total token count (including PAD, UNK) of full preprocessed discharge summaries: {len(W)}')
     weights = torch.tensor(W, dtype=torch.float)
+    print(weights)
     return weights
 
 
@@ -188,7 +191,14 @@ def prepare_datasets(data_setting, batch_size, max_len):
     train_text_indexed, train_lens = index_text(train_data['texts'], input_indexer, max_len, split='train')
     dev_text_indexed, dev_lens = index_text(dev_data['texts'], input_indexer, max_len, split='dev')
     test_text_indexed, test_lens = index_text(test_data['texts'], input_indexer, max_len, split='test')
-
+    # for text in train_text_indexed:
+    #     s = ""
+    #     for char_index in text:
+    #         if input_indexer.get_object(char_index) is not None:
+    #             s += input_indexer.get_object(char_index)
+    #     print(s)
+    #     os.system("pause")
+    # global_indexer = input_indexer
     train_set = ICD_Dataset(train_data['hadm_ids'], train_text_indexed, train_lens, train_data['targets'])
     dev_set = ICD_Dataset(dev_data['hadm_ids'], dev_text_indexed, dev_lens, dev_data['targets'])
     test_set = ICD_Dataset(test_data['hadm_ids'], test_text_indexed, test_lens, test_data['targets'])

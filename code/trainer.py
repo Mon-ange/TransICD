@@ -1,3 +1,5 @@
+import os
+
 import torch
 import logging
 import numpy as np
@@ -7,6 +9,7 @@ import torch.optim as optim
 from run_manager import RunManager
 from torch.utils.data import DataLoader
 import torch.nn as nn
+from constants import *
 
 def train(model, train_set, dev_set, test_set, hyper_params, batch_size, device):
     train_loader = DataLoader(train_set, batch_size=batch_size, shuffle=True, num_workers=1)
@@ -80,11 +83,16 @@ def evaluate(model, loader, device, dtset):
             texts = batch['text']
             lens = batch['length']
             targets = batch['codes']
-
             texts = texts.to(device)
             targets = targets
             outputs, _, attn_weights = model(texts)
-
+            for text in texts:
+                s = ""
+                for char_index in text:
+                    if global_indexer.get_object(char_index) is not None:
+                        s += global_indexer.get_object(char_index)
+                print(s)
+                os.system("pause")
             fin_targets.extend(targets.tolist())
             fin_probabs.extend(torch.sigmoid(outputs).detach().cpu().tolist())
             #if dtset == 'test' and attn_weights is not None:

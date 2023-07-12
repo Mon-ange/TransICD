@@ -1,3 +1,4 @@
+import csv
 import os
 
 import torch
@@ -70,6 +71,8 @@ def train(model, train_set, dev_set, test_set, hyper_params, batch_size, device)
 
 
 def evaluate(model, loader, device, dtset):
+    fin_hadm_ids = []
+    fin_texts = []
     fin_targets = []
     fin_probabs = []
     full_hadm_ids = []
@@ -79,25 +82,36 @@ def evaluate(model, loader, device, dtset):
         # Set the model to evaluation mode
         model.eval()
         for batch in loader:
-            #hadm_ids = batch['hadm_id']
+            hadm_ids = batch['hadm_id']
             texts = batch['text']
             lens = batch['length']
             targets = batch['codes']
             texts = texts.to(device)
-            targets = targets
+            targets = targets.to(device)
             outputs, _, attn_weights = model(texts)
             for text in texts:
                 s = ""
                 for char_index in text:
                     if global_indexer.get_object(char_index) is not None:
                         s += global_indexer.get_object(char_index)
-                print(s)
-                os.system("pause")
+            fin_texts.extend(texts.tolist())
             fin_targets.extend(targets.tolist())
-            fin_probabs.extend(torch.sigmoid(outputs).detach().cpu().tolist())
+            fin_probabs.extend(F.softmax(outputs).detach().cpu().tolist())
+            fin_hadm_ids.extend(hadm_ids.tolist())
             #if dtset == 'test' and attn_weights is not None:
             #    full_hadm_ids.extend(hadm_ids)
             #    full_attn_weights.extend(attn_weights.detach().cpu().tolist())
+    with open(f'{GENERATED_DIR}/{dtset}_debug.csv', encoding='utf-8', mode='w+', newline='') as csvfile:
+        fieldnames = ['hadm_id','text', 'pred', 'target']
+        writer = csv.DictWriter(csvfile, fieldnames)
+        writer.writeheader()
+        for i in range(len(fin_texts)):
+            writer.writerow({
+                'hadm_id': fin_hadm_ids[i],
+                'text': fin_texts[i],
+                'pred': fin_probabs[i],
+                'target': fin_targets[i]})
+        csvfile.close()
     return fin_probabs, fin_targets, full_hadm_ids, full_attn_weights
 
 

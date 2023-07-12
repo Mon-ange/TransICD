@@ -20,18 +20,27 @@ def remove_stopwords(text):
     tokens = [token for token in tokens if token not in stpwords]
     return ' '.join(tokens)
 
+def load_label_binarizer():
+    data_set_path = GENERATED_DIR + '/train_full.csv'
+    print(f"binarizer dataset path: {data_set_path}")
+    print("Loading label binarizer...")
+    data = pd.read_csv(data_set_path, dtype={'LENGTH': int})
+    mlb = MultiLabelBinarizer()
+    data['LABELS'] = data['LABELS'].apply(lambda x: str(x).split(';'))
+    mlb.fit(data['LABELS'])
+    return mlb
 
-def load_dataset(data_setting, batch_size, split):
+def load_dataset(data_setting, batch_size, split, mlb):
     print(f'{GENERATED_DIR}/{split}_{data_setting}.csv')
     data = pd.read_csv(f'{GENERATED_DIR}/{split}_{data_setting}.csv', dtype={'LENGTH': int})
     #len_stat = data['LENGTH'].describe()
     #logging.info(f'{split} set length stats:\n{len_stat}')
-    if data_setting == FULL:
-        code_df = pd.read_csv(f'{CODE_FREQ_PATH}', dtype={'code': str})
-        all_codes = ';'.join(map(str, code_df['code'].values.tolist()))
-        data = data.append({'HADM_ID': -1, 'TEXT': 'remove', 'LABELS': all_codes},
-                        ignore_index=True)
-    mlb = MultiLabelBinarizer()
+    #if data_setting == FULL:
+    #    code_df = pd.read_csv(f'{CODE_FREQ_PATH}', dtype={'code': str})
+    #    all_codes = ';'.join(map(str, code_df['code'].values.tolist()))
+    #    data = data.append({'HADM_ID': -1, 'TEXT': 'remove', 'LABELS': all_codes},
+    #                    ignore_index=True)
+    #mlb = MultiLabelBinarizer()
     data['LABELS'] = data['LABELS'].apply(lambda x: str(x).split(';'))
     code_counts = list(data['LABELS'].str.len())
     avg_code_counts = sum(code_counts)/len(code_counts)
@@ -54,6 +63,7 @@ def load_dataset(data_setting, batch_size, split):
     hadm_ids = data['HADM_ID'].values.tolist()
     texts = data['TEXT'].values.tolist()
     print("load_dataset")
+    print(mlb.transform([['A41.901'], ['C11.900'], ['C16.900'], ['C18.900'], ['C20.x00']]))
     labels = data[code_list].values.tolist()
     item_count = (len(texts) // batch_size) * batch_size
     logging.info(f'{split} set true item count: {item_count}\n\n')
@@ -82,10 +92,12 @@ def get_all_codes(train_path, dev_path, test_path):
 
 
 def load_datasets(data_setting, batch_size):
-    train_raw = load_dataset(data_setting, batch_size, split='train')
-    dev_raw = load_dataset(data_setting, batch_size, split='dev')
-    test_raw = load_dataset(data_setting, batch_size, split='test')
+    mlb = load_label_binarizer()
+    train_raw = load_dataset(data_setting, batch_size, split='train',mlb=mlb)
+    dev_raw = load_dataset(data_setting, batch_size, split='dev',mlb=mlb)
+    test_raw = load_dataset(data_setting, batch_size, split='test',mlb=mlb)
     print(train_raw['labels'])
+    # print(train_raw['targets'])
     print(dev_raw['labels'])
     print(test_raw['labels'])
     if train_raw['labels'] != dev_raw['labels'] or dev_raw['labels'] != test_raw['labels']:

@@ -14,9 +14,7 @@ import csv
 import os
 
 my_stopwords = set([stopword for stopword in stopwords.words('english')])
-my_stopwords.update({'admission', 'birth', 'date', 'discharge', 'service', 'sex', 'patient', 'name'
-
-                        , 'history',
+my_stopwords.update({'admission', 'birth', 'date', 'discharge', 'service', 'sex', 'patient', 'name' , 'history',
                      'hospital', 'last', 'first', 'course', 'past', 'day', 'one', 'family', 'chief', 'complaint'})
 stemmer = SnowballStemmer('english')
 punct = string.punctuation.replace('-', '') + ''.join(["``", "`", "..."])
@@ -143,7 +141,7 @@ def combine_notes_codes(disch_full_filename, filtered_codes_filename, out_filena
     return out_filename
 
 
-def split_data(labeled_notes_filename='notes_labeled.csv', is_full=True):
+def split_data(labeled_notes_filename='dataset_triage.csv', is_full=True):
     labeled_notes_df = pd.read_csv(f'{constants.GENERATED_DIR}/{labeled_notes_filename}')
     counter = Counter()
     for labels in labeled_notes_df['LABELS'].values:
@@ -295,19 +293,18 @@ def vectorize_code_desc(word_to_idx, out_filename='code_desc_vectors.csv'):
 
 
 if __name__ == '__main__':
-    if not os.path.exists('../results'):
-        os.makedirs('../results')
+    # if not os.path.exists('../results'):
+    #     os.makedirs('../results')
     args = constants.get_args()
     FORMAT = '%(asctime)-15s %(message)s'
     logging.basicConfig(filename='../results/preprocess.log', filemode='w', format=FORMAT, level=logging.INFO)
-    # hadm_id_set is a set which contains all the id representing each patient's stay.
-    hadm_id_set, disch_full_filename = write_discharge_summaries() # 生成summary ，论文里面这是一个步骤
-    filtered_codes_filename = combine_diag_proc_codes(hadm_id_set)
-    labeled_notes_filename = combine_notes_codes(disch_full_filename, filtered_codes_filename)
+    # # hadm_id_set is a set which contains all the id representing each patient's stay.
+    # hadm_id_set, disch_full_filename = write_discharge_summaries() # 生成summary ，论文里面这是一个步骤
+    # filtered_codes_filename = combine_diag_proc_codes(hadm_id_set)
+    # labeled_notes_filename = combine_notes_codes(disch_full_filename, filtered_codes_filename)
     split_data()
-    split_data(is_full=False)
-    build_vocab()
-    embed_filename = embed_words(embed_size=args.embed_size)
-    word_to_idx = map_vocab_to_embed()
-    vectorize_code_desc(word_to_idx)
+    #split_data(is_full=False)
+    # embed_filename = embed_words(embed_size=args.embed_size)
+    # word_to_idx = map_vocab_to_embed()
+    # vectorize_code_desc(word_to_idx)
 

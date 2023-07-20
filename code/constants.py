@@ -1,5 +1,5 @@
 import argparse
-
+from utils import *
 PAD_SYMBOL = "<PAD>"
 UNK_SYMBOL = "<UNK>"
 
@@ -21,7 +21,7 @@ CODE_DESC_VECTOR_PATH = '../data/hainan/code_desc_vectors_zh.csv'
 
 FULL = 'full'
 TOP50 = '50'
-
+global_indexer = Indexer()
 
 # Debug version
 def get_args():
@@ -53,7 +53,7 @@ def get_args():
     parser.add_argument(
         '--num_epoch',
         type=int,
-        default=[100],
+        default=[1,100],
         nargs='+',
         help='Number of epochs to train.'
     )

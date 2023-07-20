@@ -11,6 +11,8 @@ from nltk.corpus import stopwords
 from utils import *
 from constants import *
 from vocab import tokenizer
+import csv
+import codecs
 
 
 def remove_stopwords(text):
@@ -62,8 +64,6 @@ def load_dataset(data_setting, batch_size, split, mlb):
     label_freq = list(data[code_list].sum(axis=0))
     hadm_ids = data['HADM_ID'].values.tolist()
     texts = data['TEXT'].values.tolist()
-    print("load_dataset")
-    print(mlb.transform([['A41.901'], ['C11.900'], ['C16.900'], ['C18.900'], ['C20.x00']]))
     labels = data[code_list].values.tolist()
     item_count = (len(texts) // batch_size) * batch_size
     logging.info(f'{split} set true item count: {item_count}\n\n')
@@ -96,10 +96,6 @@ def load_datasets(data_setting, batch_size):
     train_raw = load_dataset(data_setting, batch_size, split='train',mlb=mlb)
     dev_raw = load_dataset(data_setting, batch_size, split='dev',mlb=mlb)
     test_raw = load_dataset(data_setting, batch_size, split='test',mlb=mlb)
-    print(train_raw['labels'])
-    # print(train_raw['targets'])
-    print(dev_raw['labels'])
-    print(test_raw['labels'])
     if train_raw['labels'] != dev_raw['labels'] or dev_raw['labels'] != test_raw['labels']:
         raise ValueError(f"Train dev test labels don't match!")
 
@@ -152,8 +148,8 @@ def index_text(data, indexer, max_len, split):
         text_indexed = [indexer.index_of(PAD_SYMBOL)]*max_len
         tokens = tokenizer(text)#list(jieba.cut(text, cut_all=False))
         text_len = max_len if len(tokens) > max_len else len(tokens)
-        if text_len == 0:
-            continue
+        # if text_len == 0:
+        #     continue
         lens.append(text_len)
         for i in range(text_len):
             if indexer.index_of(tokens[i]) >= 0:
@@ -161,7 +157,10 @@ def index_text(data, indexer, max_len, split):
             else:
                 num_oov_words += 1
                 text_indexed[i] = indexer.index_of(UNK_SYMBOL)
-        oov_word_frac.append(num_oov_words/text_len)
+        if text_len == 0:
+            oov_word_frac.append(0)
+        else:
+            oov_word_frac.append(num_oov_words / text_len)
         data_indexed.append(text_indexed)
     #logging.info(f'{split} dataset has on average {sum(oov_word_frac)/len(oov_word_frac)} oov words per discharge summary')
     return data_indexed, lens
@@ -190,6 +189,12 @@ class ICD_Dataset(Dataset):
 
 def prepare_datasets(data_setting, batch_size, max_len):
     train_data, dev_data, test_data = load_datasets(data_setting, batch_size)
+    csvWFile = codecs.open('source_text_debug.csv', "w+", 'utf-8')
+    writer = csv.writer(csvWFile)
+    print(len(test_data))
+    for i in range(0, len(test_data['hadm_ids'])):
+        writer.writerow([test_data['hadm_ids'][i], test_data['texts'][i]])
+    csvWFile.close()
     input_indexer = Indexer()
     input_indexer.add_and_get_index(PAD_SYMBOL)
     input_indexer.add_and_get_index(UNK_SYMBOL)
@@ -214,4 +219,9 @@ def prepare_datasets(data_setting, batch_size, max_len):
     train_set = ICD_Dataset(train_data['hadm_ids'], train_text_indexed, train_lens, train_data['targets'])
     dev_set = ICD_Dataset(dev_data['hadm_ids'], dev_text_indexed, dev_lens, dev_data['targets'])
     test_set = ICD_Dataset(test_data['hadm_ids'], test_text_indexed, test_lens, test_data['targets'])
+    csvWFile = codecs.open('tensor_debug.csv', "w", 'utf-8')
+    writer = csv.writer(csvWFile)
+    for item in test_set:
+        writer.writerow([item['hadm_id'],item['text'].tolist(), item['codes'].tolist()])
+    csvWFile.close()
     return train_set, dev_set, test_set, train_data['labels'], train_data['label_freq'], input_indexer

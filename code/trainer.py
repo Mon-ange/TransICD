@@ -97,7 +97,7 @@ def evaluate(model, loader, device, dtset):
             fin_texts.extend(texts.tolist())
             fin_targets.extend(targets.tolist())
             fin_probabs.extend(F.softmax(outputs).detach().cpu().tolist())
-            fin_hadm_ids.extend(hadm_ids.tolist())
+            fin_hadm_ids.extend(hadm_ids)
             #if dtset == 'test' and attn_weights is not None:
             #    full_hadm_ids.extend(hadm_ids)
             #    full_attn_weights.extend(attn_weights.detach().cpu().tolist())
@@ -159,13 +159,12 @@ def compute_scores(probabs, targets, hyper_params, dtset, full_hadm_ids=None, fu
     logging.info("target")
     logging.info(targets)
     accuracy = metrics.accuracy_score(targets, preds)
+    logging.info(f"{dtset} Accuracy: {accuracy}")
     f1_score_micro = metrics.f1_score(targets, preds, average='micro')
     f1_score_macro = metrics.f1_score(targets, preds, average='macro')
     auc_score_micro = metrics.roc_auc_score(targets, probabs, average='micro')
     auc_score_macro = metrics.roc_auc_score(targets, probabs, average='macro')
     precision_at_ks, p5_scores = precision_at_k(targets, probabs)
-
-    logging.info(f"{dtset} Accuracy: {accuracy}")
     logging.info(f"{dtset} f1 score (micro): {f1_score_micro}")
     logging.info(f"{dtset} f1 score (macro): {f1_score_macro}")
     logging.info(f"{dtset} auc score (micro): {auc_score_micro}")
@@ -177,8 +176,9 @@ def compute_scores(probabs, targets, hyper_params, dtset, full_hadm_ids=None, fu
           f"\n{dtset} f1 score (macro): {f1_score_macro}"
           f"\n{dtset} auc score (micro): {auc_score_micro}"
           f"\n{dtset} auc score (macro): {auc_score_macro}"
-          f"\n{dtset} precision at ks [1, 5, 8, 10, 15]: {precision_at_ks}")
-
+          f"\n{dtset} precision at ks [1, 5, 8, 10, 15]: {precision_at_ks}"
+    )
+'''
     if dtset == 'test' and full_attn_weights:
         hype = '_'.join([f'{k}_{v}' for k, v in hyper_params._asdict().items()])
         save_predictions(probabs, targets, dtset, hype)
@@ -199,4 +199,5 @@ def compute_scores(probabs, targets, hyper_params, dtset, full_hadm_ids=None, fu
                 for wlist in weights:
                     line = ' '.join([str(val) for val in wlist])
                     fout.write(line+'\n')
+'''
 

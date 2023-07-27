@@ -2,10 +2,10 @@ import csv
 import codecs
 import json
 
-csvFile = codecs.open('tensor2text.csv', "r", 'utf-8')
+csvFile = codecs.open('test_tensor2text.csv', "r", 'utf-8')
 reader = csv.reader(csvFile)
 
-csvWFile = codecs.open('probs2max.csv', "w", 'utf-8')
+csvWFile = codecs.open('test_probs2max.csv', "w", 'utf-8')
 writer = csv.writer(csvWFile)
 
 for item in reader:

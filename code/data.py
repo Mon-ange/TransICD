@@ -13,6 +13,7 @@ from constants import *
 from vocab import tokenizer
 import csv
 import codecs
+from preprocessor.create_vocab import segment_sentence
 
 
 def remove_stopwords(text):
@@ -146,7 +147,7 @@ def index_text(data, indexer, max_len, split):
         num_oov_words = 0
         # 将数组设置为max_len等长
         text_indexed = [indexer.index_of(PAD_SYMBOL)]*max_len
-        tokens = tokenizer(text)#list(jieba.cut(text, cut_all=False))
+        tokens = segment_sentence(text)#list(jieba.cut(text, cut_all=False))
         text_len = max_len if len(tokens) > max_len else len(tokens)
         # if text_len == 0:
         #     continue

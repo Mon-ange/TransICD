@@ -23,7 +23,7 @@ def segment_sentence(sentence):
     response = requests.post(es_server_url,
                              json = {
                                  "text": sentence,
-                                 "analyzer": "ik_max_word"
+                                 "analyzer": "ik_smart"
                              },
                              auth = HTTPBasicAuth("elastic", "wkM_c38vp8tcIx7Qq=E5"),
                              verify = False)

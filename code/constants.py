@@ -14,8 +14,8 @@ DIAG_CODE_DESC_FILE_PATH = '../mimicdata/D_ICD_DIAGNOSES.csv'
 PROC_CODE_DESC_FILE_PATH = '../mimicdata/D_ICD_PROCEDURES.csv'
 ICD_DESC_FILE_PATH = '../mimicdata/ICD9_descriptions'
 
-VOCAB_FILE_PATH = '../data/hainan/vocab_zh.csv'
-EMBED_FILE_PATH = '../data/hainan/vocab_zh.embed'
+VOCAB_FILE_PATH = '../data/hainan/vocab_ik.csv'
+EMBED_FILE_PATH = '../data/hainan/vocab_ik.embed'
 CODE_FREQ_PATH = '../data/hainan/code_freq.csv'
 CODE_DESC_VECTOR_PATH = '../data/hainan/code_desc_vectors_zh.csv'
 
@@ -53,7 +53,7 @@ def get_args():
     parser.add_argument(
         '--num_epoch',
         type=int,
-        default=[1,100],
+        default=[1,30,100],
         nargs='+',
         help='Number of epochs to train.'
     )

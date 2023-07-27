@@ -5,16 +5,17 @@ import json
 csvFile = codecs.open('../../data/hainan/test_debug.csv', "r", 'utf-8')
 reader = csv.reader(csvFile)
 
-csvIFile = codecs.open('../../data/hainan/vocab_zh.csv', "r", 'utf-8')
+csvIFile = codecs.open('../../data/hainan/vocab_ik.csv', "r", 'utf-8')
 vocab_reader = csv.reader(csvIFile)
 
-csvWFile = codecs.open('tensor2text_wsj.csv', "w", 'utf-8')
+csvWFile = codecs.open('test_tensor2text.csv', "w+", 'utf-8')
 writer = csv.writer(csvWFile)
 
 # load vocab to Dictionary
 dictionary = {}
 vocab_index = 2
 dictionary[0] = ' '
+dictionary[1] = 'UNK'
 for vocab in vocab_reader:
     dictionary[vocab_index] = vocab
     vocab_index += 1

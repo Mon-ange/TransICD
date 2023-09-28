@@ -7,6 +7,8 @@ import numpy as np
 import pandas as pd
 from torch.utils.data import Dataset
 from sklearn.preprocessing import MultiLabelBinarizer
+import nltk
+nltk.data.path.insert(0, '\\Brimon-NAS\public\data\TransICD\nltk_data')
 from nltk.corpus import stopwords
 from utils import *
 from constants import *
@@ -94,13 +96,13 @@ def get_all_codes(train_path, dev_path, test_path):
 
 def load_datasets(data_setting, batch_size):
     mlb = load_label_binarizer()
-    train_raw = load_dataset(data_setting, batch_size, split='train',mlb=mlb)
-    dev_raw = load_dataset(data_setting, batch_size, split='dev',mlb=mlb)
-    test_raw = load_dataset(data_setting, batch_size, split='test',mlb=mlb)
+    train_raw = load_dataset(data_setting, batch_size, split='train', mlb=mlb)
+    dev_raw = load_dataset(data_setting, batch_size, split='dev', mlb=mlb)
+    test_raw = load_dataset(data_setting, batch_size, split='test', mlb=mlb)
     if train_raw['labels'] != dev_raw['labels'] or dev_raw['labels'] != test_raw['labels']:
         raise ValueError(f"Train dev test labels don't match!")
 
-    return train_raw, dev_raw, test_raw
+    return train_raw, dev_raw, test_raw, mlb
 
 
 def load_embedding_weights():
@@ -189,7 +191,7 @@ class ICD_Dataset(Dataset):
 
 
 def prepare_datasets(data_setting, batch_size, max_len):
-    train_data, dev_data, test_data = load_datasets(data_setting, batch_size)
+    train_data, dev_data, test_data, mlb = load_datasets(data_setting, batch_size)
     csvWFile = codecs.open('source_text_debug.csv', "w+", 'utf-8')
     writer = csv.writer(csvWFile)
     print(len(test_data))
@@ -225,4 +227,4 @@ def prepare_datasets(data_setting, batch_size, max_len):
     for item in test_set:
         writer.writerow([item['hadm_id'],item['text'].tolist(), item['codes'].tolist()])
     csvWFile.close()
-    return train_set, dev_set, test_set, train_data['labels'], train_data['label_freq'], input_indexer
+    return train_set, dev_set, test_set, train_data['labels'], train_data['label_freq'], input_indexer, mlb

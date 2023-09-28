@@ -1,5 +1,5 @@
 import numpy as np
-
+import torch.nn.functional as F
 
 class Predictor:
 
@@ -12,5 +12,11 @@ class Predictor:
     def predict(self, text):
         self.model.eval()
         text = text.to(self.device)
-        probabs, _, attn_weights = self.model(text)
-        return probabs
+        output, _, attn_weights = self.model(text)
+        probabs = F.softmax(output).detach().cpu().tolist()
+        print(f'probabs: {probabs}')
+        index = np.argmax(probabs, axis=1)
+        preds = np.zeros_like(probabs)
+        for i in range(len(probabs)):
+            preds[i, index[i]] = 1
+        return preds

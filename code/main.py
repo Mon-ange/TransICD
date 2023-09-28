@@ -14,7 +14,7 @@ import sys
 from predictor import Predictor
 from data import load_dataset
 from torch.utils.data import DataLoader
-import jieba
+from generate_graph import generate_graph
 
 
 def get_hyper_params_combinations(args):
@@ -92,3 +92,6 @@ if __name__ == "__main__":
         if use_cuda:
             torch.cuda.manual_seed_all(args.random_seed)
         run(args, device)
+    elif run_mode == 'generate_graph':
+        model = torch.load(f'../results/model.pt')
+        generate_graph(model, device)

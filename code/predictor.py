@@ -14,7 +14,6 @@ class Predictor:
         text = text.to(self.device)
         output, _, attn_weights = self.model(text)
         probabs = F.softmax(output).detach().cpu().tolist()
-        print(f'probabs: {probabs}')
         index = np.argmax(probabs, axis=1)
         preds = np.zeros_like(probabs)
         for i in range(len(probabs)):

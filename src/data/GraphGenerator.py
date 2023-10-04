@@ -3,9 +3,9 @@ import networkx as nx
 import matplotlib.pyplot as plt
 import numpy as np
 from torch.utils.data import DataLoader
-import translate_icd
-from src.data.data import prepare_datasets
-from src.predictors.Predictor import Predictor
+import data.translate_icd
+from data.data import prepare_datasets
+from predictors.Predictor import Predictor
 
 class ICDMap:
 

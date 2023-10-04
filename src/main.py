@@ -5,13 +5,13 @@ from collections import namedtuple
 from itertools import product
 import constants
 from models import *
-from src.data.data import prepare_datasets, load_embedding_weights
+from data.data import prepare_datasets, load_embedding_weights
 from trainer import train
 import random
 import os
-from src.predictors.Predictor import Predictor
+from predictors.Predictor import Predictor
 from torch.utils.data import DataLoader
-from src.data.GraphGenerator import generate_graph
+from data.GraphGenerator import generate_graph
 
 
 def get_hyper_params_combinations(args):
@@ -28,7 +28,7 @@ def get_hyper_params_combinations(args):
 
 
 def run(args, device):
-    train_set, dev_set, test_set, train_labels, train_label_freq, input_indexer = prepare_datasets(data_setting="full",
+    train_set, dev_set, test_set, train_labels, train_label_freq, input_indexer, mlb = prepare_datasets(data_setting="full",
                                                                                                    batch_size=args.batch_size,
                                                                                                    max_len=args.max_len)
     print("print dataset...................................................................")

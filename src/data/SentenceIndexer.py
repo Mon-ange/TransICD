@@ -1,3 +1,4 @@
+import warnings
 import numpy as np
 import requests
 import random
@@ -56,6 +57,7 @@ class SentenceIndexer:
         self.lock.release()
 
     def index(self, sentences):
+        warnings.filterwarnings('ignore')
         # print(f'sentence length: {len(sentences)}')
         self.indexed_sentences = np.empty(len(sentences), dtype=list)
         self.completed_count = 0
@@ -64,7 +66,7 @@ class SentenceIndexer:
         for index in range(len(sentences)):
             thread_pool_executor.submit(self.segment_sentence, index, sentences[index])
         while self.completed_count != len(sentences):
-            print(self.completed_count)
+            time.sleep(2)
         return self.indexed_sentences.tolist()
 
 

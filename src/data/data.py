@@ -10,10 +10,10 @@ from sklearn.preprocessing import MultiLabelBinarizer
 import nltk
 nltk.data.path.insert(0, '\\Brimon-NAS\public\data\TransICD\nltk_data')
 from nltk.corpus import stopwords
-from src.constants import *
+from constants import *
 import csv
 import codecs
-from src.data.SentenceIndexer import SentenceIndexer
+from data.SentenceIndexer import SentenceIndexer
 import datetime
 
 

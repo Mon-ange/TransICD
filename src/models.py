@@ -10,7 +10,7 @@ class Attention(nn.Module):
         super(Attention, self).__init__()
         self.l1 = nn.Linear(hidden_size, hidden_size*attn_expansion)
         self.tnh = nn.Tanh()
-        # self.dropout = nn.Dropout(dropout_rate)
+        self.dropout = nn.Dropout(dropout_rate)
         self.l2 = nn.Linear(hidden_size*attn_expansion, output_size)
 
     def forward(self, hidden, attn_mask=None):

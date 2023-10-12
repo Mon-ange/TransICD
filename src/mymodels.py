@@ -41,6 +41,7 @@ class LabelAttention(nn.Module):
         self.dropout = nn.Dropout(dropout_rate)
 
     def forward(self, hidden, label_embeds, attn_mask=None):
+        # B: batch size, S sequence length, H: hidden size, L label size
         # output_1: B x S x H -> B x S x E
         output_1 = self.tnh(self.l1(hidden))
         output_1 = self.dropout(output_1)

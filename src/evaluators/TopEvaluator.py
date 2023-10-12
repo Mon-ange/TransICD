@@ -11,6 +11,7 @@ class TopEvaluator(object):
             if one of the top_number of one predict hit the correspondent target, we calculate it as a true case
             predicts shape: [ [0.25, 0.36, 0.01 ... 0.02], [0.33, 0.3, 0.1 ...] ...] N x L, N is the number of cases, L is the number of Labels
         """
+        print(predicts[0])
         total_case_number = np.array(predicts).shape[0]
         L = np.array(predicts).shape[1]
         count = 0
@@ -33,7 +34,8 @@ class TopEvaluator(object):
                 l+=1
                 if l== self.top_number:
                     break
-            print(resarray)
+            if i ==0:
+                print(resarray)
 
             for result in resarray:
                 if result == true_tar_no:

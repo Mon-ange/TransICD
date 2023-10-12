@@ -4,5 +4,5 @@ class PredictorBase(object):
         self.model = model
         self.device = device
 
-    def predict(self):
+    def predict(self, data):
         raise NotImplementedError

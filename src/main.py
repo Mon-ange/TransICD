@@ -4,14 +4,16 @@ from collections import OrderedDict
 from collections import namedtuple
 from itertools import product
 import constants
-from models import *
+import torch
+from mymodels import TransICD, Transformer
 from data.data import prepare_datasets, load_embedding_weights
 from trainer import train
 import random
 import os
-from predictors.Predictor import Predictor
+from predictors.predictor import Predictor
 from torch.utils.data import DataLoader
-from data.GraphGenerator import generate_graph
+from data.graph_generator import generate_graph
+from models.TransGraphICD import TransGraphICDConfig, TransGraphICD
 
 
 def get_hyper_params_combinations(args):
@@ -46,6 +48,13 @@ def run(args, device):
             model = TransICD(embed_weights, args.embed_size, args.freeze_embed, args.max_len, args.num_trans_layers,
                              args.num_attn_heads, args.trans_forward_expansion, train_set.get_code_count(),
                              args.label_attn_expansion, args.dropout_rate, label_desc, device, train_label_freq)
+        elif args.model == "TransGraphICD":
+            config = TransGraphICDConfig(embed_weights, args.embed_size, args.freeze_embed, args.max_len,
+                                         args.num_trans_layers,
+                                         args.num_attn_heads, args.trans_forward_expansion, train_set.get_code_count(),
+                                         args.label_attn_expansion, args.dropout_rate, device)
+            print(config)
+            model = TransGraphICD(config)
         else:
             raise ValueError("Unknown value for args.model. Pick Transformer or TransICD")
 

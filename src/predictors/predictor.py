@@ -1,7 +1,8 @@
 import numpy as np
 import torch.nn.functional as F
+from bases.predictor_base import PredictorBase
 
-class Predictor:
+class Predictor(PredictorBase):
 
     # model -预测模型
     # device - 跑模型的设备，建议使用GPU

@@ -11,6 +11,7 @@ from run_manager import RunManager
 from torch.utils.data import DataLoader
 import torch.nn as nn
 from constants import *
+from evaluators.TopEvaluator import TopEvaluator
 
 def train(model, train_set, dev_set, test_set, hyper_params, batch_size, device):
     train_loader = DataLoader(train_set, batch_size=batch_size, shuffle=True, num_workers=1)
@@ -160,11 +161,14 @@ def compute_scores(probabs, targets, hyper_params, dtset, full_hadm_ids=None, fu
     logging.info(targets)
     accuracy = metrics.accuracy_score(targets, preds)
     logging.info(f"{dtset} Accuracy: {accuracy}")
+    top_evaluator = TopEvaluator(3)
+    top3_accuracy = top_evaluator.evaluate(predicts=probabs, targets= targets)
     f1_score_micro = metrics.f1_score(targets, preds, average='micro')
     f1_score_macro = metrics.f1_score(targets, preds, average='macro')
     auc_score_micro = metrics.roc_auc_score(targets, probabs, average='micro')
     auc_score_macro = metrics.roc_auc_score(targets, probabs, average='macro')
     precision_at_ks, p5_scores = precision_at_k(targets, probabs)
+    logging.info(f"{dtset} top3 accuracy: {top3_accuracy}")
     logging.info(f"{dtset} f1 score (micro): {f1_score_micro}")
     logging.info(f"{dtset} f1 score (macro): {f1_score_macro}")
     logging.info(f"{dtset} auc score (micro): {auc_score_micro}")
@@ -172,6 +176,7 @@ def compute_scores(probabs, targets, hyper_params, dtset, full_hadm_ids=None, fu
     logging.info(f"{dtset} precision at ks [1, 5, 8, 10, 15]: {precision_at_ks}\n")
 
     print(f"\n{dtset} accuracy: {accuracy}"
+          f"\n{dtset} top3 accuracy: {top3_accuracy}"
           f"\n{dtset} f1 score (micro): {f1_score_micro}"
           f"\n{dtset} f1 score (macro): {f1_score_macro}"
           f"\n{dtset} auc score (micro): {auc_score_micro}"

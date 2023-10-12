@@ -10,7 +10,7 @@ GENERATED_DIR = '../data/hainan/'
 NOTEEVENTS_FILE_PATH = '../mimicdata/NOTEEVENTS.csv'
 DIAGNOSES_FILE_PATH = '../mimicdata/DIAGNOSES_ICD.csv'
 PORCEDURES_FILE_PATH = '../mimicdata/PROCEDURES_ICD.csv'
-DIAG_CODE_DESC_FILE_PATH = '../mimicdata/D_ICD_DIAGNOSES.csv'
+DIAG_CODE_DESC_FILE_PATH: str = '../mimicdata/D_ICD_DIAGNOSES.csv'
 PROC_CODE_DESC_FILE_PATH = '../mimicdata/D_ICD_PROCEDURES.csv'
 ICD_DESC_FILE_PATH = '../mimicdata/ICD9_descriptions'
 
@@ -22,7 +22,7 @@ CODE_DESC_VECTOR_PATH = '../data/hainan/code_desc_vectors_zh.csv'
 FULL = 'full'
 TOP50 = '50'
 global_indexer = Indexer()
-
+global_args = None
 # Debug version
 def get_args():
     parser = argparse.ArgumentParser()
@@ -46,7 +46,7 @@ def get_args():
     parser.add_argument(
         '--model',
         type=str,
-        default='TransICD',
+        default='TransGraphICD',
         help='Transformer or TransICD models'
     )
 
@@ -128,7 +128,7 @@ def get_args():
         default=0.1,
         help='Dropout rate for transformers'
     )
-
     args = parser.parse_args()  # '--target_kernel_size 4 8'.split()
+    global_args = args
     return args
 

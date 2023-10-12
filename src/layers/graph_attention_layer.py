@@ -26,6 +26,10 @@ class GAT(nn.Module):
 
 class GraphAttentionLayer(nn.Module):
 
+    """
+        alpha is the Alpha for leakyRelu
+
+    """
     def __init__(self, in_features, out_features, dropout, alpha, concat=True):
         super(GraphAttentionLayer, self).__init__()
         self.dropout = dropout

@@ -3,9 +3,10 @@ import networkx as nx
 import matplotlib.pyplot as plt
 import numpy as np
 from torch.utils.data import DataLoader
-import data.translate_icd
+from data.translate_icd import translate_icd
 from data.data import prepare_datasets
-from predictors.Predictor import Predictor
+from predictors.predictor import Predictor
+from data.icd import icd_utility
 
 class ICDMap:
 
@@ -13,22 +14,32 @@ class ICDMap:
     G = None
     def __init__(self, node_num):
         self.array = np.zeros((node_num, node_num))
-        H = nx.path_graph(node_num)
+        # H = nx.path_graph(node_num)
         self.G = nx.Graph()
-        self.G.add_nodes_from(H)
+        print(icd_utility.getAllLabels())
+        for label in icd_utility.getAllLabels():
+            print(icd_utility.getICDByCode(label).description)
+            self.G.add_node(icd_utility.getICDByCode(label).description)
 
     def add_edge(self, node1, node2):
-        self.array[node1][node2] = 1
-        self.array[node2][node1] = 1
-        self.G.add_edge(node1, node2)
-        self.G.add_edge(node2, node1)
+        self.array[node1][node2] = self.array[node1][node2] + 0.1
+        self.array[node2][node1] = self.array[node2][node1] + 0.1
+
+
 
     def print_map(self):
         for i in range(len(self.array)):
             print(self.array[i])
 
     def draw_map(self):
-        nx.draw(self.G, with_labels=True, edge_color='b', node_color='g')
+        for i in range(len(self.array)):
+            for j in range(len(self.array)):
+                if(self.array[i][j] > 0.8):
+                    node1ICD = icd_utility.getICDByIndex(i)
+                    node2ICD = icd_utility.getICDByIndex(j)
+                    self.G.add_edge(node1ICD.description, node2ICD.description, weight=self.array[i][j])
+                    self.G.add_edge(node2ICD.description, node1ICD.description, weight=self.array[i][j])
+        nx.draw(self.G, with_labels=True, font_family="SimSun")
         plt.show()
 
 

@@ -9,7 +9,7 @@ import time
 from requests.adapters import HTTPAdapter
 
 
-class SentenceIndexer:
+class SentenceSegmentor:
     es_server_url = ['https://127.0.0.1:9200/_analyze', 'https://127.0.0.1:9201/_analyze', 'https://127.0.0.1:9202/_analyze',
                      'https://127.0.0.1:9203/_analyze']
 
@@ -24,7 +24,7 @@ class SentenceIndexer:
             session.mount(url, adapter)
             self.sessions.append(session)
 
-    def segment_sentence(self, index, sentence):
+    def _do_segment(self, sentence):
         server_num = random.randint(0, 3)
         retry = 0
         while retry < 3:
@@ -51,12 +51,16 @@ class SentenceIndexer:
         for item in data["tokens"]:
             if item["type"] == "CN_WORD" or item["type"] == "CN_CHAR":
                 result.append(item["token"])
+        return result
+
+    def _segment_sentence(self, index, sentence):
+        result = self._do_segment(sentence)
         self.lock.acquire()
         self.indexed_sentences[index] = result
         self.completed_count += 1
         self.lock.release()
 
-    def index(self, sentences):
+    def segment(self, sentences):
         warnings.filterwarnings('ignore')
         # print(f'sentence length: {len(sentences)}')
         self.indexed_sentences = np.empty(len(sentences), dtype=list)
@@ -64,14 +68,18 @@ class SentenceIndexer:
         print(f'total: {len(sentences)}')
         thread_pool_executor = ThreadPoolExecutor(max_workers=68, thread_name_prefix="test_")
         for index in range(len(sentences)):
-            thread_pool_executor.submit(self.segment_sentence, index, sentences[index])
+            thread_pool_executor.submit(self._segment_sentence, index, sentences[index])
         while self.completed_count != len(sentences):
             time.sleep(2)
         return self.indexed_sentences.tolist()
 
+    def segment_single(self, sentence):
+        return self._do_segment(sentence)
 
+
+sentence_segmentor = SentenceSegmentor()
 if __name__ == "__main__":
-    sentenceIndexer = SentenceIndexer()
+    sentenceIndexer = SentenceSegmentor()
     print(sentenceIndexer.index(["南京市长江大桥", "今天天气不错"]))
     #indexed_sentences = np.empty(len(["南京市长江大桥", "今天天气不错"]))
     #indexed_sentences

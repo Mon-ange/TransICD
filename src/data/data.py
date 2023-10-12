@@ -13,7 +13,7 @@ from nltk.corpus import stopwords
 from constants import *
 import csv
 import codecs
-from data.SentenceIndexer import SentenceIndexer
+from data.sentence_segmentor import SentenceSegmentor
 import datetime
 
 
@@ -164,8 +164,8 @@ def index_text(data, indexer, max_len, split):
     #         oov_word_frac.append(num_oov_words / text_len)
     #     data_indexed.append(text_indexed)
     starttime = datetime.datetime.now()
-    sentenceIndexer = SentenceIndexer()
-    data = sentenceIndexer.index(data)
+    sentence_segmentor = SentenceSegmentor()
+    data = sentence_segmentor.segment(data)
     data_indexed = []
     for tokens in data:
         num_oov_words = 0
@@ -213,11 +213,11 @@ class ICD_Dataset(Dataset):
 def prepare_datasets(data_setting, batch_size, max_len):
     train_data, dev_data, test_data, mlb = load_datasets(data_setting, batch_size)
     csvWFile = codecs.open('../source_text_debug.csv', "w+", 'utf-8')
-    writer = csv.writer(csvWFile)
-    print(len(test_data))
-    for i in range(0, len(test_data['hadm_ids'])):
-        writer.writerow([test_data['hadm_ids'][i], test_data['texts'][i]])
-    csvWFile.close()
+
+    print(f'The size of train data: {len(train_data)}')
+    print(f'The size of test data: {len(test_data)}')
+    print(f'The size of dev data: {len(dev_data)}')
+
     input_indexer = Indexer()
     input_indexer.add_and_get_index(PAD_SYMBOL)
     input_indexer.add_and_get_index(UNK_SYMBOL)
@@ -231,20 +231,8 @@ def prepare_datasets(data_setting, batch_size, max_len):
     train_text_indexed, train_lens = index_text(train_data['texts'], input_indexer, max_len, split='train')
     dev_text_indexed, dev_lens = index_text(dev_data['texts'], input_indexer, max_len, split='dev')
     test_text_indexed, test_lens = index_text(test_data['texts'], input_indexer, max_len, split='test')
-    # for text in train_text_indexed:
-    #     s = ""
-    #     for char_index in text:
-    #         if input_indexer.get_object(char_index) is not None:
-    #             s += input_indexer.get_object(char_index)
-    #     print(s)
-    #     os.system("pause")
-    # global_indexer = input_indexer
     train_set = ICD_Dataset(train_data['hadm_ids'], train_text_indexed, train_lens, train_data['targets'])
     dev_set = ICD_Dataset(dev_data['hadm_ids'], dev_text_indexed, dev_lens, dev_data['targets'])
     test_set = ICD_Dataset(test_data['hadm_ids'], test_text_indexed, test_lens, test_data['targets'])
-    csvWFile = codecs.open('../tensor_debug.csv', "w", 'utf-8')
-    writer = csv.writer(csvWFile)
-    for item in test_set:
-        writer.writerow([item['hadm_id'],item['text'].tolist(), item['codes'].tolist()])
-    csvWFile.close()
+    # TODO: use a specific utility class to Read Labels
     return train_set, dev_set, test_set, train_data['labels'], train_data['label_freq'], input_indexer, mlb

@@ -1,3 +1,4 @@
+import json
 import sys
 import networkx as nx
 import matplotlib.pyplot as plt
@@ -28,8 +29,14 @@ class ICDMap:
 
 
     def print_map(self):
+        ajson = json.dumps(self.array.tolist())
+        print(ajson)
+        print_array = np.zeros((len(self.array), len(self.array)))
         for i in range(len(self.array)):
-            print(self.array[i])
+            for j in range(len(self.array)):
+                if (self.array[i][j] > 0.8):
+                    print_array[i][j] = 1
+        print(json.dumps(print_array.tolist()))
 
     def draw_map(self):
         for i in range(len(self.array)):

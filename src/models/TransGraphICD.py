@@ -49,7 +49,9 @@ class TransGraphICD(nn.Module):
         self.config = config
         self.embedding_layer = nn.Embedding.from_pretrained(config.embed_weights, freeze=config.freeze_weight)
         self.dropout = nn.Dropout(config.dropout_rate)
-        self.label_descs = icd_utility.getIndexedICDDescriptions(self.config.icd_description_max_length)
+        label_descs = icd_utility.getIndexedICDDescriptions(self.config.icd_description_max_length)
+        print(label_descs)
+        label_descs = torch.tensor(label_descs, dtype=torch.long)
         self.adjacent_graph = icd_utility.getGraph()
         self.position_encoding_layer = PositionalEncodingLayer(config.embed_size, config.dropout_rate,
                                                                config.text_max_len)
@@ -61,13 +63,14 @@ class TransGraphICD(nn.Module):
         self.perlabel_attention_layer = PerLabelAttentionLayer(config.embed_size, config.output_size,
                                                                config.label_attention_expansion, config.dropout_rate)
         self.fcs = nn.ModuleList([nn.Linear(config.embed_size, 1) for code in range(config.output_size)])
-        self.graph_attention = GraphAttentionLayer(config.embed_size ,config.embed_size, self.dropout, config.relu_alpha)
+        self.graph_attention = GraphAttentionLayer(config.embed_size ,config.embed_size, config.dropout_rate, config.relu_alpha)
         self.embedder = nn.Embedding.from_pretrained(self.config.embed_weights, freeze=True)
         self.aggregate_layer = AggregateLayer(config.embed_size, config.embed_size, config.dropout_rate)
-        self.register_buffer('label_desc_mask', (self.label_descs != self.pad_idx) * 1.0)
+        self.register_buffer('label_desc_mask', (label_descs != self.config.pad_idx) * 1.0)
+        self.register_buffer('label_descs', label_descs)
 
     def embed_label_desc(self):
-        label_embeds = self.embedder(self.label_desc).transpose(1, 2).matmul(self.label_desc_mask.unsqueeze(2))
+        label_embeds = self.embedder(self.label_descs).transpose(1, 2).matmul(self.label_desc_mask.unsqueeze(2))
         label_embeds = torch.div(label_embeds.squeeze(2), torch.sum(self.label_desc_mask, dim=-1).unsqueeze(1))
         return label_embeds
 
@@ -90,7 +93,7 @@ class TransGraphICD(nn.Module):
         encoded_inputs = encoded_inputs.permute(1, 0, 2)  # N x T x E
         weighted_outputs, attn_weights = self.perlabel_attention_layer(encoded_inputs, attn_mask) # weighted_outputs N x L ?
         # TODO: Graph Attention Layer to ICD Description
-        label_embeds = self.embed_label_desc(self.label_descs)
+        label_embeds = self.embed_label_desc()
         icd_gat = self.graph_attention(label_embeds, self.adjacent_graph)  # L x description_max_len
         weighted_outputs, attn_weights = self.aggregate_layer(encoded_inputs, icd_gat, attn_mask)
 

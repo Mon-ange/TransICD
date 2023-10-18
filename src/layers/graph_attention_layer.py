@@ -47,7 +47,7 @@ class GraphAttentionLayer(nn.Module):
 
     def forward(self, input, adj):
         h = torch.mm(input, self.W)  # shape [N, out_features]
-        N = h.size()[0]
+        N = h.size()[0] # N is the size of input
 
         a_input = torch.cat([h.repeat(1, N).view(N * N, -1), h.repeat(N, 1)], dim=1).view(N, -1,
                                                                                           2 * self.out_features)  # shape[N, N, 2*out_features]
@@ -55,6 +55,7 @@ class GraphAttentionLayer(nn.Module):
 
         zero_vec = -9e15 * torch.ones_like(e)
         # print(adj)
+        adj = torch.tensor(adj).cuda()
         attention = torch.where(adj > 0, e, zero_vec)
         attention = F.softmax(attention, dim=1)
         attention = F.dropout(attention, self.dropout, training=self.training)

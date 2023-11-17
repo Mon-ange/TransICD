@@ -14,7 +14,8 @@ from predictors.predictor import Predictor
 from torch.utils.data import DataLoader
 from data.graph_generator import generate_graph
 from models.TransGraphICD import TransGraphICDConfig, TransGraphICD
-
+from models.BiLSTM import BiLSTM, BiLSTMConfig
+from models.BiLSTMGraph import BiLSTMGraph,BiLSTMGraphConfig
 
 def get_hyper_params_combinations(args):
     params = OrderedDict(
@@ -55,6 +56,28 @@ def run(args, device):
                                          args.label_attn_expansion, args.dropout_rate, device)
             print(config)
             model = TransGraphICD(config)
+        elif args.model == "BiLSTM":
+            config = BiLSTMConfig(in_dim=args.embed_size,
+                                  hidden_dim=args.embed_size,
+                                  n_layer=args.num_trans_layers ,
+                                  n_class=train_set.get_code_count(),
+                                  embed_weights = embed_weights,
+                                  freeze_weight = args.freeze_embed,
+                                  embed_size=args.embed_size,
+                                  dropout_rate=args.dropout_rate,
+                                  device=device)
+            model = BiLSTM(config)
+        elif args.model == "BiLSTMGraph":
+            config = BiLSTMGraphConfig(in_dim=args.embed_size,
+                                  hidden_dim=args.embed_size,
+                                  n_layer=args.num_trans_layers ,
+                                  n_class=train_set.get_code_count(),
+                                  embed_weights = embed_weights,
+                                  freeze_weight = args.freeze_embed,
+                                  embed_size=args.embed_size,
+                                  dropout_rate=args.dropout_rate,
+                                  device=device)
+            model = BiLSTMGraph(config)
         else:
             raise ValueError("Unknown value for args.model. Pick Transformer or TransICD")
 

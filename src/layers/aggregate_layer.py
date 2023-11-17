@@ -18,7 +18,8 @@ class AggregateLayer(nn.Module):
     def forward(self, hidden, label_embeds, attn_mask=None):
         # B: batch size, S sequence length, H: hidden size, L label size
         # output_1: B x S x H -> B x S x E
-        output_1 = self.tnh(self.l1(hidden))
+        output_1 = self.l1(hidden)
+        output_1 = self.tnh(output_1)
         output_1 = self.dropout(output_1)
 
         # output_2: (B x S x E) x (E x L) -> B x S x L
@@ -27,7 +28,6 @@ class AggregateLayer(nn.Module):
         # Masked fill to avoid softmaxing over padded words
         if attn_mask is not None:
             output_2 = output_2.masked_fill(attn_mask == 0, -1e9)
-
         # attn_weights: B x S x L -> B x L x S
         attn_weights = F.softmax(output_2, dim=1).transpose(1, 2)
 

@@ -95,6 +95,7 @@ class TransGraphICD(nn.Module):
         # TODO: Graph Attention Layer to ICD Description
         label_embeds = self.embed_label_desc()
         icd_gat = self.graph_attention(label_embeds, self.adjacent_graph)  # L x description_max_len
+        print("text shape before aggregate:", encoded_inputs.shape)
         weighted_outputs, attn_weights = self.aggregate_layer(encoded_inputs, icd_gat, attn_mask)
 
         outputs = torch.zeros((weighted_outputs.size(0), self.config.output_size)).to(self.config.device)

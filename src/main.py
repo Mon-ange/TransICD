@@ -16,7 +16,8 @@ from data.graph_generator import generate_graph
 from models.TransGraphICD import TransGraphICDConfig, TransGraphICD
 from models.BiLSTM import BiLSTM, BiLSTMConfig
 from models.BiLSTMGraph import BiLSTMGraph,BiLSTMGraphConfig
-
+from models.RNN import RNN,RNNConfig
+from models.TextCNN import TextCNN, TextCNNConfig
 def get_hyper_params_combinations(args):
     params = OrderedDict(
         learning_rate=args.learning_rate,
@@ -67,6 +68,19 @@ def run(args, device):
                                   dropout_rate=args.dropout_rate,
                                   device=device)
             model = BiLSTM(config)
+
+        elif args.model == "RNN":
+            config = RNNConfig(in_dim=args.embed_size,
+                               hidden_dim=args.embed_size,
+                               n_layer=args.num_trans_layers,
+                               n_class=train_set.get_code_count(),
+                               embed_weights = embed_weights,
+                               freeze_weight= args.freeze_embed,
+                               embed_size= args.embed_size,
+                               dropout_rate=args.dropout_rate,
+                               device = device)
+            model = RNN(config)
+
         elif args.model == "BiLSTMGraph":
             config = BiLSTMGraphConfig(in_dim=args.embed_size,
                                   hidden_dim=args.embed_size,
@@ -78,6 +92,15 @@ def run(args, device):
                                   dropout_rate=args.dropout_rate,
                                   device=device)
             model = BiLSTMGraph(config)
+        elif args.model == "TextCNN":
+            config = TextCNNConfig(in_dim=args.embed_size,
+                                  n_class=train_set.get_code_count(),
+                                  embed_weights = embed_weights,
+                                  freeze_weight = args.freeze_embed,
+                                  embed_size=args.embed_size,
+                                  dropout_rate=args.dropout_rate,
+                                  device=device)
+            model = TextCNN(config)
         else:
             raise ValueError("Unknown value for args.model. Pick Transformer or TransICD")
 
